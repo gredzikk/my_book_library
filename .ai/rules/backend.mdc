@@ -1,0 +1,28 @@
+# Backend Development Rules for My Book Library
+
+## 1. Core Technology
+
+- **Backend-as-a-Service (BaaS):** All backend logic and database interactions must be implemented using **Supabase**.
+- **Database:** Use the integrated **PostgreSQL** database provided by Supabase.
+- **Authentication:** All user authentication (registration, login) must be handled by **Supabase Auth**.
+
+## 2. Database Schema and Logic
+
+- **Tables:** Design database tables to store user data, books, and reading sessions. Key tables should include `users`, `books`, and `reading_sessions`.
+- **Data Integrity:** Use PostgreSQL constraints (e.g., foreign keys, checks) to ensure data integrity. For example, a `book` must be associated with a `user`.
+- **Business Logic:** Implement complex business logic, such as calculating reading statistics, using **PostgreSQL Functions** and **Triggers** within Supabase. This keeps the logic centralized and secure.
+- **API Access:** Expose data to the frontend exclusively through the auto-generated RESTful API provided by Supabase or by using the `supabase-flutter` client library.
+
+## 3. External Services
+
+- **Google Books API:** Use the Google Books API for fetching book metadata when a user provides an ISBN. All interactions with this API should be handled securely. Consider using a Supabase Edge Function as a proxy to protect API keys.
+
+## 4. Security
+
+- **Row-Level Security (RLS):** Enable and configure RLS for all tables containing user data. Policies must ensure that users can only access and modify their own data.
+- **API Keys:** Store all secret keys and API credentials (e.g., for Google Books API) securely using Supabase's secret management. Do not expose them on the client-side.
+- **Authentication:** Secure user accounts using Supabase Auth, enforcing email verification and strong password policies as defined in the PRD.
+
+## 5. CI/CD
+
+- **Database Migrations:** Manage database schema changes using Supabase's migration tools. Integrate migration scripts into the CI/CD pipeline defined in [`tech-stack.md`](.ai/tech-stack.md) to automate deployments.

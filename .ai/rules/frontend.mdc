@@ -1,0 +1,31 @@
+# Frontend Development Rules for My Book Library
+
+## 1. Core Technology
+
+- **Framework:** The application must be built using **Flutter** and the **Dart** language.
+- **Platform:** The Minimum Viable Product (MVP) targets the **Android** platform exclusively, as specified in the [PRD](.ai/prd.md).
+
+## 2. Architecture and State Management
+
+- **State Management:** Use the **BLoC (Business Logic Component)** pattern for managing application state. This separates UI from business logic, improving testability and maintainability.
+- **Dependency Injection:** Use a library like `flutter_bloc`'s `RepositoryProvider` and `BlocProvider` to provide dependencies and Blocs to the widget tree.
+- **Project Structure:** Organize files by feature (e.g., `authentication`, `library`, `reading_session`). Each feature directory should contain its own `bloc`, `widgets`, and `view` subdirectories.
+
+## 3. UI and User Experience
+
+- **Component-Based UI:** Build the UI from small, reusable widgets. Avoid creating massive, monolithic widget classes.
+- **Styling:** Define and use a consistent theme (colors, fonts, text styles) via `ThemeData`. Avoid hardcoding style values directly in widgets.
+- **Navigation:** Implement navigation using a standard Flutter navigator or a type-safe routing package like `go_router`.
+- **User Feedback:** Provide clear user feedback for all operations, including loading indicators, success messages, and descriptive error dialogs.
+
+## 4. Backend Communication
+
+- **Supabase Client:** Use the `supabase-flutter` package for all communication with the Supabase backend, including database queries and authentication.
+- **Asynchronous Operations:** Handle all asynchronous operations (e.g., API calls, database queries) using `async/await` and manage loading/error states within your BLoCs.
+
+## 5. Testing
+
+- **Unit Tests:** Write unit tests for all BLoCs and utility functions to verify business logic. Use `bloc_test` for testing BLoCs.
+- **Widget Tests:** Create widget tests for key UI components and screens to ensure they render correctly.
+- **Integration Tests:** As required by the [PRD](.ai/prd.md), write at least one integration test for a critical user flow, such as logging in and adding a book.
+- **Mocking:** Use `mockito` to mock dependencies (e.g., repositories) in your tests.

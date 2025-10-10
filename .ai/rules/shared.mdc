@@ -1,0 +1,24 @@
+# Shared Development Rules for My Book Library
+
+## 1. General Principles
+
+- **Single Source of Truth:** The [Product Requirements Document (PRD)](.ai/prd.md) is the single source of truth for all features and user stories. All development work must align with its specifications.
+- **Code Quality:** Write clean, readable, and well-documented code. Follow the official Dart style guide.
+- **Version Control:** Use Git for version control. Follow a consistent branching strategy (e.g., GitFlow) and write clear, descriptive commit messages.
+
+## 2. Data Models
+
+- **Immutability:** Data models (e.g., `Book`, `User`, `ReadingSession`) should be immutable. Use packages like `freezed` or define classes with `final` properties and `copyWith` methods.
+- **Serialization:** Implement `fromJson` and `toJson` methods for all data models to ensure seamless serialization/deserialization when communicating with the backend.
+- **Validation:** Implement data validation logic within the models or in a dedicated validation layer to ensure data integrity, as per the requirements in the PRD.
+
+## 3. Tooling and Environment
+
+- **CI/CD:** The project uses **GitHub Actions** for continuous integration and deployment, as specified in [`tech-stack.md`](.ai/tech-stack.md). The pipeline should automatically run linters, tests, and builds.
+- **Linting:** Use the `flutter_lints` package to enforce code style and identify potential issues. All code must be free of linting errors.
+- **Code Formatting:** Use `dart format` to ensure consistent code formatting across the entire codebase. Configure your IDE to format on save.
+
+## 4. Security
+
+- **Input Sanitization:** Sanitize all user input on the client-side before sending it to the backend to prevent injection attacks.
+- **Error Handling:** Do not expose sensitive information or detailed stack traces in user-facing error messages. Log detailed errors to a secure monitoring service.
