@@ -577,7 +577,7 @@ packages:
     source: hosted
     version: "5.1.1"
   logging:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: logging
       sha256: c8245ada5f1717ed44271ed1c26b8ce85ca3228fd2ffdb75468ab01979309d61
@@ -624,6 +624,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.3+2"
+  mockito:
+    dependency: "direct dev"
+    description:
+      name: mockito
+      sha256: "4546eac99e8967ea91bae633d2ca7698181d008e95fa4627330cf903d573277a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.4.6"
   native_synchronization_temp:
     dependency: transitive
     description:
