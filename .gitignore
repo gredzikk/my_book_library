@@ -44,3 +44,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 .env
+config.env
+supabase/migrations/20251013000001_add_books_performance_indexes.sql
