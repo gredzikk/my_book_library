@@ -175,3 +175,63 @@ Map<String, dynamic> _$$GenreDtoImplToJson(_$GenreDtoImpl instance) =>
       'name': instance.name,
       'created_at': instance.createdAt.toIso8601String(),
     };
+
+_$GoogleBookResultImpl _$$GoogleBookResultImplFromJson(
+  Map<String, dynamic> json,
+) => _$GoogleBookResultImpl(
+  title: json['title'] as String,
+  authors: (json['authors'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
+  publisher: json['publisher'] as String?,
+  publishedDate: json['publishedDate'] as String?,
+  pageCount: (json['pageCount'] as num?)?.toInt(),
+  categories: (json['categories'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
+  imageLinks: json['imageLinks'] == null
+      ? null
+      : ImageLinks.fromJson(json['imageLinks'] as Map<String, dynamic>),
+  industryIdentifiers: (json['industryIdentifiers'] as List<dynamic>?)
+      ?.map((e) => IndustryIdentifier.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
+
+Map<String, dynamic> _$$GoogleBookResultImplToJson(
+  _$GoogleBookResultImpl instance,
+) => <String, dynamic>{
+  'title': instance.title,
+  'authors': instance.authors,
+  'publisher': instance.publisher,
+  'publishedDate': instance.publishedDate,
+  'pageCount': instance.pageCount,
+  'categories': instance.categories,
+  'imageLinks': instance.imageLinks,
+  'industryIdentifiers': instance.industryIdentifiers,
+};
+
+_$ImageLinksImpl _$$ImageLinksImplFromJson(Map<String, dynamic> json) =>
+    _$ImageLinksImpl(
+      smallThumbnail: json['smallThumbnail'] as String?,
+      thumbnail: json['thumbnail'] as String?,
+    );
+
+Map<String, dynamic> _$$ImageLinksImplToJson(_$ImageLinksImpl instance) =>
+    <String, dynamic>{
+      'smallThumbnail': instance.smallThumbnail,
+      'thumbnail': instance.thumbnail,
+    };
+
+_$IndustryIdentifierImpl _$$IndustryIdentifierImplFromJson(
+  Map<String, dynamic> json,
+) => _$IndustryIdentifierImpl(
+  type: json['type'] as String,
+  identifier: json['identifier'] as String,
+);
+
+Map<String, dynamic> _$$IndustryIdentifierImplToJson(
+  _$IndustryIdentifierImpl instance,
+) => <String, dynamic>{
+  'type': instance.type,
+  'identifier': instance.identifier,
+};

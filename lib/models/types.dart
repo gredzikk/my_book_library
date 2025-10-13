@@ -235,3 +235,84 @@ class GenreDto with _$GenreDto {
     return GenreDto(id: genre.id, name: genre.name, createdAt: genre.createdAt);
   }
 }
+
+/// DTO dla odpowiedzi z Google Books API
+@freezed
+class GoogleBookResult with _$GoogleBookResult {
+  const factory GoogleBookResult({
+    required String title,
+    List<String>? authors,
+    String? publisher,
+    String? publishedDate,
+    int? pageCount,
+    List<String>? categories,
+    ImageLinks? imageLinks,
+    List<IndustryIdentifier>? industryIdentifiers,
+  }) = _GoogleBookResult;
+
+  factory GoogleBookResult.fromJson(Map<String, dynamic> json) =>
+      _$GoogleBookResultFromJson(json);
+
+  const GoogleBookResult._();
+
+  /// Konwertuj do CreateBookDto
+  CreateBookDto toCreateBookDto({String? genreId}) {
+    return CreateBookDto(
+      title: title,
+      author: authors?.join(', ') ?? 'Unknown Author',
+      pageCount: pageCount ?? 0,
+      publisher: publisher,
+      publicationYear: _extractYear(publishedDate),
+      coverUrl: imageLinks?.thumbnail ?? imageLinks?.smallThumbnail,
+      isbn: _extractISBN(),
+      genreId: genreId,
+    );
+  }
+
+  int? _extractYear(String? date) {
+    if (date == null) return null;
+    final match = RegExp(r'\d{4}').firstMatch(date);
+    return match != null ? int.tryParse(match.group(0)!) : null;
+  }
+
+  String? _extractISBN() {
+    if (industryIdentifiers == null) return null;
+    // Preferuj ISBN_13, potem ISBN_10
+    try {
+      final isbn13 = industryIdentifiers!.firstWhere(
+        (id) => id.type == 'ISBN_13',
+      );
+      return isbn13.identifier;
+    } catch (_) {
+      // ISBN_13 not found, try ISBN_10
+      try {
+        final isbn10 = industryIdentifiers!.firstWhere(
+          (id) => id.type == 'ISBN_10',
+        );
+        return isbn10.identifier;
+      } catch (_) {
+        return null;
+      }
+    }
+  }
+}
+
+@freezed
+class ImageLinks with _$ImageLinks {
+  const factory ImageLinks({String? smallThumbnail, String? thumbnail}) =
+      _ImageLinks;
+
+  factory ImageLinks.fromJson(Map<String, dynamic> json) =>
+      _$ImageLinksFromJson(json);
+}
+
+@freezed
+class IndustryIdentifier with _$IndustryIdentifier {
+  const factory IndustryIdentifier({
+    required String type,
+    required String identifier,
+  }) = _IndustryIdentifier;
+
+  factory IndustryIdentifier.fromJson(Map<String, dynamic> json) =>
+      _$IndustryIdentifierFromJson(json);
+}

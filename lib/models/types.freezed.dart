@@ -2208,3 +2208,722 @@ abstract class _GenreDto implements GenreDto {
   _$$GenreDtoImplCopyWith<_$GenreDtoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+GoogleBookResult _$GoogleBookResultFromJson(Map<String, dynamic> json) {
+  return _GoogleBookResult.fromJson(json);
+}
+
+/// @nodoc
+mixin _$GoogleBookResult {
+  String get title => throw _privateConstructorUsedError;
+  List<String>? get authors => throw _privateConstructorUsedError;
+  String? get publisher => throw _privateConstructorUsedError;
+  String? get publishedDate => throw _privateConstructorUsedError;
+  int? get pageCount => throw _privateConstructorUsedError;
+  List<String>? get categories => throw _privateConstructorUsedError;
+  ImageLinks? get imageLinks => throw _privateConstructorUsedError;
+  List<IndustryIdentifier>? get industryIdentifiers =>
+      throw _privateConstructorUsedError;
+
+  /// Serializes this GoogleBookResult to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of GoogleBookResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $GoogleBookResultCopyWith<GoogleBookResult> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $GoogleBookResultCopyWith<$Res> {
+  factory $GoogleBookResultCopyWith(
+    GoogleBookResult value,
+    $Res Function(GoogleBookResult) then,
+  ) = _$GoogleBookResultCopyWithImpl<$Res, GoogleBookResult>;
+  @useResult
+  $Res call({
+    String title,
+    List<String>? authors,
+    String? publisher,
+    String? publishedDate,
+    int? pageCount,
+    List<String>? categories,
+    ImageLinks? imageLinks,
+    List<IndustryIdentifier>? industryIdentifiers,
+  });
+
+  $ImageLinksCopyWith<$Res>? get imageLinks;
+}
+
+/// @nodoc
+class _$GoogleBookResultCopyWithImpl<$Res, $Val extends GoogleBookResult>
+    implements $GoogleBookResultCopyWith<$Res> {
+  _$GoogleBookResultCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of GoogleBookResult
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? title = null,
+    Object? authors = freezed,
+    Object? publisher = freezed,
+    Object? publishedDate = freezed,
+    Object? pageCount = freezed,
+    Object? categories = freezed,
+    Object? imageLinks = freezed,
+    Object? industryIdentifiers = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            title: null == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                      as String,
+            authors: freezed == authors
+                ? _value.authors
+                : authors // ignore: cast_nullable_to_non_nullable
+                      as List<String>?,
+            publisher: freezed == publisher
+                ? _value.publisher
+                : publisher // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            publishedDate: freezed == publishedDate
+                ? _value.publishedDate
+                : publishedDate // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            pageCount: freezed == pageCount
+                ? _value.pageCount
+                : pageCount // ignore: cast_nullable_to_non_nullable
+                      as int?,
+            categories: freezed == categories
+                ? _value.categories
+                : categories // ignore: cast_nullable_to_non_nullable
+                      as List<String>?,
+            imageLinks: freezed == imageLinks
+                ? _value.imageLinks
+                : imageLinks // ignore: cast_nullable_to_non_nullable
+                      as ImageLinks?,
+            industryIdentifiers: freezed == industryIdentifiers
+                ? _value.industryIdentifiers
+                : industryIdentifiers // ignore: cast_nullable_to_non_nullable
+                      as List<IndustryIdentifier>?,
+          )
+          as $Val,
+    );
+  }
+
+  /// Create a copy of GoogleBookResult
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ImageLinksCopyWith<$Res>? get imageLinks {
+    if (_value.imageLinks == null) {
+      return null;
+    }
+
+    return $ImageLinksCopyWith<$Res>(_value.imageLinks!, (value) {
+      return _then(_value.copyWith(imageLinks: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$GoogleBookResultImplCopyWith<$Res>
+    implements $GoogleBookResultCopyWith<$Res> {
+  factory _$$GoogleBookResultImplCopyWith(
+    _$GoogleBookResultImpl value,
+    $Res Function(_$GoogleBookResultImpl) then,
+  ) = __$$GoogleBookResultImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    String title,
+    List<String>? authors,
+    String? publisher,
+    String? publishedDate,
+    int? pageCount,
+    List<String>? categories,
+    ImageLinks? imageLinks,
+    List<IndustryIdentifier>? industryIdentifiers,
+  });
+
+  @override
+  $ImageLinksCopyWith<$Res>? get imageLinks;
+}
+
+/// @nodoc
+class __$$GoogleBookResultImplCopyWithImpl<$Res>
+    extends _$GoogleBookResultCopyWithImpl<$Res, _$GoogleBookResultImpl>
+    implements _$$GoogleBookResultImplCopyWith<$Res> {
+  __$$GoogleBookResultImplCopyWithImpl(
+    _$GoogleBookResultImpl _value,
+    $Res Function(_$GoogleBookResultImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of GoogleBookResult
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? title = null,
+    Object? authors = freezed,
+    Object? publisher = freezed,
+    Object? publishedDate = freezed,
+    Object? pageCount = freezed,
+    Object? categories = freezed,
+    Object? imageLinks = freezed,
+    Object? industryIdentifiers = freezed,
+  }) {
+    return _then(
+      _$GoogleBookResultImpl(
+        title: null == title
+            ? _value.title
+            : title // ignore: cast_nullable_to_non_nullable
+                  as String,
+        authors: freezed == authors
+            ? _value._authors
+            : authors // ignore: cast_nullable_to_non_nullable
+                  as List<String>?,
+        publisher: freezed == publisher
+            ? _value.publisher
+            : publisher // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        publishedDate: freezed == publishedDate
+            ? _value.publishedDate
+            : publishedDate // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        pageCount: freezed == pageCount
+            ? _value.pageCount
+            : pageCount // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        categories: freezed == categories
+            ? _value._categories
+            : categories // ignore: cast_nullable_to_non_nullable
+                  as List<String>?,
+        imageLinks: freezed == imageLinks
+            ? _value.imageLinks
+            : imageLinks // ignore: cast_nullable_to_non_nullable
+                  as ImageLinks?,
+        industryIdentifiers: freezed == industryIdentifiers
+            ? _value._industryIdentifiers
+            : industryIdentifiers // ignore: cast_nullable_to_non_nullable
+                  as List<IndustryIdentifier>?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$GoogleBookResultImpl extends _GoogleBookResult {
+  const _$GoogleBookResultImpl({
+    required this.title,
+    final List<String>? authors,
+    this.publisher,
+    this.publishedDate,
+    this.pageCount,
+    final List<String>? categories,
+    this.imageLinks,
+    final List<IndustryIdentifier>? industryIdentifiers,
+  }) : _authors = authors,
+       _categories = categories,
+       _industryIdentifiers = industryIdentifiers,
+       super._();
+
+  factory _$GoogleBookResultImpl.fromJson(Map<String, dynamic> json) =>
+      _$$GoogleBookResultImplFromJson(json);
+
+  @override
+  final String title;
+  final List<String>? _authors;
+  @override
+  List<String>? get authors {
+    final value = _authors;
+    if (value == null) return null;
+    if (_authors is EqualUnmodifiableListView) return _authors;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  final String? publisher;
+  @override
+  final String? publishedDate;
+  @override
+  final int? pageCount;
+  final List<String>? _categories;
+  @override
+  List<String>? get categories {
+    final value = _categories;
+    if (value == null) return null;
+    if (_categories is EqualUnmodifiableListView) return _categories;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  final ImageLinks? imageLinks;
+  final List<IndustryIdentifier>? _industryIdentifiers;
+  @override
+  List<IndustryIdentifier>? get industryIdentifiers {
+    final value = _industryIdentifiers;
+    if (value == null) return null;
+    if (_industryIdentifiers is EqualUnmodifiableListView)
+      return _industryIdentifiers;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  String toString() {
+    return 'GoogleBookResult(title: $title, authors: $authors, publisher: $publisher, publishedDate: $publishedDate, pageCount: $pageCount, categories: $categories, imageLinks: $imageLinks, industryIdentifiers: $industryIdentifiers)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GoogleBookResultImpl &&
+            (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality().equals(other._authors, _authors) &&
+            (identical(other.publisher, publisher) ||
+                other.publisher == publisher) &&
+            (identical(other.publishedDate, publishedDate) ||
+                other.publishedDate == publishedDate) &&
+            (identical(other.pageCount, pageCount) ||
+                other.pageCount == pageCount) &&
+            const DeepCollectionEquality().equals(
+              other._categories,
+              _categories,
+            ) &&
+            (identical(other.imageLinks, imageLinks) ||
+                other.imageLinks == imageLinks) &&
+            const DeepCollectionEquality().equals(
+              other._industryIdentifiers,
+              _industryIdentifiers,
+            ));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    title,
+    const DeepCollectionEquality().hash(_authors),
+    publisher,
+    publishedDate,
+    pageCount,
+    const DeepCollectionEquality().hash(_categories),
+    imageLinks,
+    const DeepCollectionEquality().hash(_industryIdentifiers),
+  );
+
+  /// Create a copy of GoogleBookResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GoogleBookResultImplCopyWith<_$GoogleBookResultImpl> get copyWith =>
+      __$$GoogleBookResultImplCopyWithImpl<_$GoogleBookResultImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$GoogleBookResultImplToJson(this);
+  }
+}
+
+abstract class _GoogleBookResult extends GoogleBookResult {
+  const factory _GoogleBookResult({
+    required final String title,
+    final List<String>? authors,
+    final String? publisher,
+    final String? publishedDate,
+    final int? pageCount,
+    final List<String>? categories,
+    final ImageLinks? imageLinks,
+    final List<IndustryIdentifier>? industryIdentifiers,
+  }) = _$GoogleBookResultImpl;
+  const _GoogleBookResult._() : super._();
+
+  factory _GoogleBookResult.fromJson(Map<String, dynamic> json) =
+      _$GoogleBookResultImpl.fromJson;
+
+  @override
+  String get title;
+  @override
+  List<String>? get authors;
+  @override
+  String? get publisher;
+  @override
+  String? get publishedDate;
+  @override
+  int? get pageCount;
+  @override
+  List<String>? get categories;
+  @override
+  ImageLinks? get imageLinks;
+  @override
+  List<IndustryIdentifier>? get industryIdentifiers;
+
+  /// Create a copy of GoogleBookResult
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GoogleBookResultImplCopyWith<_$GoogleBookResultImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+ImageLinks _$ImageLinksFromJson(Map<String, dynamic> json) {
+  return _ImageLinks.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ImageLinks {
+  String? get smallThumbnail => throw _privateConstructorUsedError;
+  String? get thumbnail => throw _privateConstructorUsedError;
+
+  /// Serializes this ImageLinks to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of ImageLinks
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $ImageLinksCopyWith<ImageLinks> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ImageLinksCopyWith<$Res> {
+  factory $ImageLinksCopyWith(
+    ImageLinks value,
+    $Res Function(ImageLinks) then,
+  ) = _$ImageLinksCopyWithImpl<$Res, ImageLinks>;
+  @useResult
+  $Res call({String? smallThumbnail, String? thumbnail});
+}
+
+/// @nodoc
+class _$ImageLinksCopyWithImpl<$Res, $Val extends ImageLinks>
+    implements $ImageLinksCopyWith<$Res> {
+  _$ImageLinksCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ImageLinks
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? smallThumbnail = freezed, Object? thumbnail = freezed}) {
+    return _then(
+      _value.copyWith(
+            smallThumbnail: freezed == smallThumbnail
+                ? _value.smallThumbnail
+                : smallThumbnail // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            thumbnail: freezed == thumbnail
+                ? _value.thumbnail
+                : thumbnail // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$ImageLinksImplCopyWith<$Res>
+    implements $ImageLinksCopyWith<$Res> {
+  factory _$$ImageLinksImplCopyWith(
+    _$ImageLinksImpl value,
+    $Res Function(_$ImageLinksImpl) then,
+  ) = __$$ImageLinksImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String? smallThumbnail, String? thumbnail});
+}
+
+/// @nodoc
+class __$$ImageLinksImplCopyWithImpl<$Res>
+    extends _$ImageLinksCopyWithImpl<$Res, _$ImageLinksImpl>
+    implements _$$ImageLinksImplCopyWith<$Res> {
+  __$$ImageLinksImplCopyWithImpl(
+    _$ImageLinksImpl _value,
+    $Res Function(_$ImageLinksImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ImageLinks
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? smallThumbnail = freezed, Object? thumbnail = freezed}) {
+    return _then(
+      _$ImageLinksImpl(
+        smallThumbnail: freezed == smallThumbnail
+            ? _value.smallThumbnail
+            : smallThumbnail // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        thumbnail: freezed == thumbnail
+            ? _value.thumbnail
+            : thumbnail // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ImageLinksImpl implements _ImageLinks {
+  const _$ImageLinksImpl({this.smallThumbnail, this.thumbnail});
+
+  factory _$ImageLinksImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ImageLinksImplFromJson(json);
+
+  @override
+  final String? smallThumbnail;
+  @override
+  final String? thumbnail;
+
+  @override
+  String toString() {
+    return 'ImageLinks(smallThumbnail: $smallThumbnail, thumbnail: $thumbnail)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ImageLinksImpl &&
+            (identical(other.smallThumbnail, smallThumbnail) ||
+                other.smallThumbnail == smallThumbnail) &&
+            (identical(other.thumbnail, thumbnail) ||
+                other.thumbnail == thumbnail));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, smallThumbnail, thumbnail);
+
+  /// Create a copy of ImageLinks
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ImageLinksImplCopyWith<_$ImageLinksImpl> get copyWith =>
+      __$$ImageLinksImplCopyWithImpl<_$ImageLinksImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ImageLinksImplToJson(this);
+  }
+}
+
+abstract class _ImageLinks implements ImageLinks {
+  const factory _ImageLinks({
+    final String? smallThumbnail,
+    final String? thumbnail,
+  }) = _$ImageLinksImpl;
+
+  factory _ImageLinks.fromJson(Map<String, dynamic> json) =
+      _$ImageLinksImpl.fromJson;
+
+  @override
+  String? get smallThumbnail;
+  @override
+  String? get thumbnail;
+
+  /// Create a copy of ImageLinks
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ImageLinksImplCopyWith<_$ImageLinksImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+IndustryIdentifier _$IndustryIdentifierFromJson(Map<String, dynamic> json) {
+  return _IndustryIdentifier.fromJson(json);
+}
+
+/// @nodoc
+mixin _$IndustryIdentifier {
+  String get type => throw _privateConstructorUsedError;
+  String get identifier => throw _privateConstructorUsedError;
+
+  /// Serializes this IndustryIdentifier to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of IndustryIdentifier
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $IndustryIdentifierCopyWith<IndustryIdentifier> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $IndustryIdentifierCopyWith<$Res> {
+  factory $IndustryIdentifierCopyWith(
+    IndustryIdentifier value,
+    $Res Function(IndustryIdentifier) then,
+  ) = _$IndustryIdentifierCopyWithImpl<$Res, IndustryIdentifier>;
+  @useResult
+  $Res call({String type, String identifier});
+}
+
+/// @nodoc
+class _$IndustryIdentifierCopyWithImpl<$Res, $Val extends IndustryIdentifier>
+    implements $IndustryIdentifierCopyWith<$Res> {
+  _$IndustryIdentifierCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of IndustryIdentifier
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? type = null, Object? identifier = null}) {
+    return _then(
+      _value.copyWith(
+            type: null == type
+                ? _value.type
+                : type // ignore: cast_nullable_to_non_nullable
+                      as String,
+            identifier: null == identifier
+                ? _value.identifier
+                : identifier // ignore: cast_nullable_to_non_nullable
+                      as String,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$IndustryIdentifierImplCopyWith<$Res>
+    implements $IndustryIdentifierCopyWith<$Res> {
+  factory _$$IndustryIdentifierImplCopyWith(
+    _$IndustryIdentifierImpl value,
+    $Res Function(_$IndustryIdentifierImpl) then,
+  ) = __$$IndustryIdentifierImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String type, String identifier});
+}
+
+/// @nodoc
+class __$$IndustryIdentifierImplCopyWithImpl<$Res>
+    extends _$IndustryIdentifierCopyWithImpl<$Res, _$IndustryIdentifierImpl>
+    implements _$$IndustryIdentifierImplCopyWith<$Res> {
+  __$$IndustryIdentifierImplCopyWithImpl(
+    _$IndustryIdentifierImpl _value,
+    $Res Function(_$IndustryIdentifierImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of IndustryIdentifier
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? type = null, Object? identifier = null}) {
+    return _then(
+      _$IndustryIdentifierImpl(
+        type: null == type
+            ? _value.type
+            : type // ignore: cast_nullable_to_non_nullable
+                  as String,
+        identifier: null == identifier
+            ? _value.identifier
+            : identifier // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$IndustryIdentifierImpl implements _IndustryIdentifier {
+  const _$IndustryIdentifierImpl({
+    required this.type,
+    required this.identifier,
+  });
+
+  factory _$IndustryIdentifierImpl.fromJson(Map<String, dynamic> json) =>
+      _$$IndustryIdentifierImplFromJson(json);
+
+  @override
+  final String type;
+  @override
+  final String identifier;
+
+  @override
+  String toString() {
+    return 'IndustryIdentifier(type: $type, identifier: $identifier)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$IndustryIdentifierImpl &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.identifier, identifier) ||
+                other.identifier == identifier));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, type, identifier);
+
+  /// Create a copy of IndustryIdentifier
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$IndustryIdentifierImplCopyWith<_$IndustryIdentifierImpl> get copyWith =>
+      __$$IndustryIdentifierImplCopyWithImpl<_$IndustryIdentifierImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$IndustryIdentifierImplToJson(this);
+  }
+}
+
+abstract class _IndustryIdentifier implements IndustryIdentifier {
+  const factory _IndustryIdentifier({
+    required final String type,
+    required final String identifier,
+  }) = _$IndustryIdentifierImpl;
+
+  factory _IndustryIdentifier.fromJson(Map<String, dynamic> json) =
+      _$IndustryIdentifierImpl.fromJson;
+
+  @override
+  String get type;
+  @override
+  String get identifier;
+
+  /// Create a copy of IndustryIdentifier
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$IndustryIdentifierImplCopyWith<_$IndustryIdentifierImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
