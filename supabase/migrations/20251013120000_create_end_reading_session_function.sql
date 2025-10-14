@@ -102,3 +102,4 @@ $$;
 COMMENT ON FUNCTION end_reading_session(UUID, TIMESTAMPTZ, TIMESTAMPTZ, INTEGER) IS 
 'Atomically creates a reading session and updates book progress. Returns session UUID or NULL if no progress made.';
 
+

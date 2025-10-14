@@ -49,7 +49,7 @@ Interfejs użytkownika będzie prosty, intuicyjny i skoncentrowany na kluczowych
 2.  **Ekran szczegółów książki**: Prezentuje pełne informacje o książce, wskaźnik postępu, historię sesji w formie listy (`ListView`) oraz główne przyciski akcji.
 3.  **Przepływ dodawania książki**: Inicjowany z ekranu głównego, prowadzi do ekranu wyboru (skanowanie/ręcznie), następnie do skanera ISBN (widok kamery z nakładką) lub bezpośrednio do formularza edycji/dodawania.
 4.  **Ekran sesji czytania**: Pełnoekranowy widok z dużym stoperem, informacjami o książce i przyciskiem zakończenia, który otwiera dialog do wprowadzenia postępu.
-5.  **Ekrany uwierzytelniania**: Standardowe ekrany logowania i rejestracji dostarczane przez Supabase Auth.
+5.  **Ekrany uwierzytelniania**: Standardowe ekrany logowania i rejestracji. Użyj pakietu `flutter_auth_ui` z pub.dev
 6.  **Onboarding**: Sekwencja 3-4 ekranów (`PageView`) z wizualnym przewodnikiem po kluczowych funkcjach.
 
 #### c. Strategia integracji z API i zarządzania stanem

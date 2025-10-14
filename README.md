@@ -69,6 +69,37 @@ To get a local copy up and running, follow these simple steps.
 -   `flutter test`: Runs the unit and widget tests for the project.
 -   `flutter analyze`: Analyzes the project's Dart code for potential errors.
 -   `dart format .`: Formats all Dart files in the project according to the recommended style.
+-   `flutter pub run build_runner build`: Generates code for Freezed models and mocks.
+
+## API Documentation
+
+### Genre API
+
+The Genre API provides access to the list of available book genres. For detailed documentation, see [Genre API Documentation](lib/services/README_GENRE_API.md).
+
+**Quick Example:**
+
+```dart
+// Fetch all genres
+final genreService = GenreService(supabase);
+final genres = await genreService.listGenres();
+
+// Use in a form
+GenreSelector(
+  genreService: genreService,
+  selectedGenreId: selectedGenreId,
+  onChanged: (genreId) => setState(() => selectedGenreId = genreId),
+)
+```
+
+**Features:**
+- ✅ 24-hour in-memory caching
+- ✅ Comprehensive error handling
+- ✅ Ready-to-use `GenreSelector` widget
+- ✅ Automatic retry on network errors
+
+**Available Genres (MVP):**
+Biografia, Fantastyka, Horror, Kryminał, Literatura faktu, Literatura piękna, Poradnik, Przygodowa, Romans, Thriller, Inne
 
 ## Project Scope
 
