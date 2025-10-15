@@ -44,7 +44,8 @@ class AuthenticationScreen extends StatelessWidget {
 
               // Widget SupaEmailAuth z pakietu flutter_auth_ui
               SupaEmailAuth(
-                redirectTo: null,
+                showConfirmPasswordField: true,
+                redirectTo: 'io.supabase.mybooklibrary://login-callback/',
                 onSignInComplete: (response) {
                   // Logowanie zakończone pomyślnie
                   // AuthGate automatycznie przekieruje do HomeScreen
@@ -69,6 +70,7 @@ class AuthenticationScreen extends StatelessWidget {
                 localization: const SupaEmailAuthLocalization(
                   enterEmail: 'Wprowadź adres email',
                   enterPassword: 'Wprowadź hasło',
+                  confirmPassword: "Wprowadź hasło ponownie",
                   signIn: 'Zaloguj się',
                   signUp: 'Zarejestruj się',
                   forgotPassword: 'Zapomniałeś hasła?',
@@ -79,13 +81,6 @@ class AuthenticationScreen extends StatelessWidget {
                   passwordResetSent: 'Link do resetowania hasła został wysłany',
                   unexpectedError: 'Wystąpił nieoczekiwany błąd',
                 ),
-              ),
-              SupaSocialsAuth(
-                socialProviders: [OAuthProvider.apple, OAuthProvider.google],
-                colored: true,
-                redirectUrl: 'io.mydomain.myapp://callback',
-                onSuccess: (Session response) {},
-                onError: (error) {},
               ),
             ],
           ),
