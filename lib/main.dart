@@ -4,9 +4,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'dart:developer' as dev;
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-// Import widgets
+// Import widgets and services
 import 'widgets/auth_gate.dart';
+import 'services/book_service.dart';
+import 'services/genre_service.dart';
 
 Future<void> main() async {
   // Configure logging
@@ -36,13 +39,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'My Book Library',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(
+          create: (context) => BookService(Supabase.instance.client),
+        ),
+        RepositoryProvider(
+          create: (context) => GenreService(Supabase.instance.client),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'My Book Library',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          useMaterial3: true,
+        ),
+        home: const AuthGate(),
       ),
-      home: const AuthGate(),
     );
   }
 }

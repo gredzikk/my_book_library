@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../screens/authentication_screen.dart';
-import '../screens/home_screen.dart';
+import '../features/home/view/home_screen_view.dart';
 
 /// AuthGate - strażnik autoryzacji aplikacji
 ///
@@ -33,7 +33,7 @@ class _AuthGateState extends State<AuthGate> {
 
         if (session != null) {
           // Użytkownik jest zalogowany - przekieruj do HomeScreen
-          return const HomeScreen();
+          return const HomeScreenView();
         } else {
           // Użytkownik nie jest zalogowany - pokaż ekran uwierzytelnienia
           return const AuthenticationScreen();
