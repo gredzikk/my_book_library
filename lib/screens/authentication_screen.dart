@@ -80,6 +80,13 @@ class AuthenticationScreen extends StatelessWidget {
                   unexpectedError: 'Wystąpił nieoczekiwany błąd',
                 ),
               ),
+              SupaSocialsAuth(
+                socialProviders: [OAuthProvider.apple, OAuthProvider.google],
+                colored: true,
+                redirectUrl: 'io.mydomain.myapp://callback',
+                onSuccess: (Session response) {},
+                onError: (error) {},
+              ),
             ],
           ),
         ),

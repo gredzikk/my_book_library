@@ -19,7 +19,7 @@ Hierarchia komponentów będzie prosta i skupiona na wykorzystaniu gotowych rozw
 MainApp
 └── AuthGate (StatefulWidget)
     ├── (jeśli brak autoryzacji) -> AuthenticationScreen (StatelessWidget)
-    │   └── SupaEmailAuth (z pakietu flutter_auth_ui)
+    │   └── SupaEmailAuth (z pakietu supabase_auth_ui)
     │       ├── (wewnętrzne) Pole email
     │       ├── (wewnętrzne) Pole hasła
     │       └── (wewnętrzne) Przyciski "Zaloguj" / "Zarejestruj"
@@ -36,7 +36,7 @@ MainApp
 - **Propsy**: Brak.
 
 ### `AuthenticationScreen`
-- **Opis komponentu**: Ekran zawierający formularze logowania i rejestracji. Jego głównym zadaniem jest wyrenderowanie i skonfigurowanie gotowego widżetu `SupaEmailAuth` z pakietu `flutter_auth_ui`.
+- **Opis komponentu**: Ekran zawierający formularze logowania i rejestracji. Jego głównym zadaniem jest wyrenderowanie i skonfigurowanie gotowego widżetu `SupaEmailAuth` z pakietu `supabase_auth_ui`.
 - **Główne elementy**: `Scaffold`, `SupaEmailAuth`.
 - **Obsługiwane interakcje**: Interakcje są w pełni obsługiwane przez wewnętrzną logikę `SupaEmailAuth`: wpisywanie tekstu, przełączanie między logowaniem a rejestracją, klikanie przycisków.
 - **Obsługiwana walidacja**: Walidacja jest delegowana do `SupaEmailAuth`.
@@ -91,7 +91,7 @@ Scenariusze błędów są obsługiwane przez widżet `SupaEmailAuth`, który wy�
 - **Inne błędy serwera (5xx)**: Wyświetlany jest generyczny komunikat o nieoczekiwanym błędzie.
 
 ## 11. Kroki implementacji
-1. **Dodanie zależności**: Dodaj pakiet `flutter_auth_ui` do pliku `pubspec.yaml` i uruchom `flutter pub get`.
+1. **Dodanie zależności**: Dodaj pakiet `supabase_auth_ui` do pliku `pubspec.yaml` i uruchom `flutter pub get`.
 2. **Inicjalizacja Supabase**: Upewnij się, że `Supabase.initialize()` jest poprawnie skonfigurowane w pliku `lib/main.dart`.
 3. **Stworzenie `AuthGate`**:
    - Utwórz nowy plik `lib/widgets/auth_gate.dart`.

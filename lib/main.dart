@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'dart:developer' as dev;
+import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 
 // Import widgets
 import 'widgets/auth_gate.dart';
