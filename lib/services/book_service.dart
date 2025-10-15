@@ -265,4 +265,288 @@ class BookService {
     );
     return uuidRegex.hasMatch(uuid);
   }
+
+  // ==========================================================================
+  // Get Book Details
+  // ==========================================================================
+
+  /// Fetches details of a single book by ID
+  ///
+  /// This method queries the books table for a specific book and includes
+  /// the genre name via embedded select.
+  ///
+  /// **Query Pattern:**
+  /// ```
+  /// SELECT books.*, genres.name
+  /// FROM books
+  /// LEFT JOIN genres ON books.genre_id = genres.id
+  /// WHERE books.id = ? AND books.user_id = auth.uid()
+  /// ```
+  ///
+  /// **Parameters:**
+  /// - [id]: UUID of the book to fetch
+  ///
+  /// **Returns:**
+  /// A [BookDetailDto] with embedded genre information
+  ///
+  /// **Throws:**
+  /// - [ValidationException]: Invalid book ID format
+  /// - [UnauthorizedException]: Authentication failed or token expired
+  /// - [NotFoundException]: Book not found or doesn't belong to user
+  /// - [ServerException]: Database error or Supabase service unavailable
+  /// - [NoInternetException]: No network connection
+  /// - [TimeoutException]: Request took too long
+  /// - [ParseException]: Failed to parse API response
+  ///
+  /// **Example:**
+  /// ```dart
+  /// final book = await bookService.getBook('c3e4b5a6-3b2a-4f1e-8b3d-2c1a1b0e9d8c');
+  /// print('Book: ${book.title} by ${book.author}');
+  /// ```
+  Future<BookDetailDto> getBook(String id) async {
+    _logger.info('Fetching book with id: $id');
+
+    final stopwatch = Stopwatch()..start();
+
+    try {
+      // Validate book ID format
+      if (!_isValidUuid(id)) {
+        throw ValidationException('Invalid book ID format (must be UUID)');
+      }
+
+      // Build the query with embedded genre relation
+      final response = await _supabase
+          .from('books')
+          .select('*,genres(name)')
+          .eq('id', id)
+          .maybeSingle()
+          .timeout(ApiConstants.defaultTimeout);
+
+      // Check if book was found
+      if (response == null) {
+        throw NotFoundException('Book not found or access denied');
+      }
+
+      // Parse the response to DTO
+      final book = BookDetailDto.fromJson(response);
+
+      stopwatch.stop();
+      _logger.info(
+        'Successfully fetched book "${book.title}" in ${stopwatch.elapsedMilliseconds}ms',
+      );
+
+      return book;
+    } on PostgrestException catch (e) {
+      stopwatch.stop();
+      _logger.severe('Postgrest error: ${e.message} (code: ${e.code})', e);
+
+      if (e.code == 'PGRST301' || (e.message.toLowerCase().contains('jwt'))) {
+        throw UnauthorizedException(e.message);
+      } else if (e.code == 'PGRST116') {
+        throw NotFoundException('Book not found');
+      } else {
+        throw ServerException(e.message);
+      }
+    } on FormatException catch (e) {
+      stopwatch.stop();
+      _logger.severe('Failed to parse response: ${e.message}', e);
+      throw ParseException('Invalid response format from server');
+    } on SocketException catch (e) {
+      stopwatch.stop();
+      _logger.warning('No internet connection: ${e.message}');
+      throw NoInternetException();
+    } on TimeoutException catch (e) {
+      stopwatch.stop();
+      _logger.warning('Request timeout: ${e.message}');
+      throw TimeoutException(
+        'Request timed out after ${ApiConstants.defaultTimeout.inSeconds}s',
+      );
+    } catch (e) {
+      stopwatch.stop();
+      _logger.severe('Unexpected error: $e', e);
+      throw ServerException('An unexpected error occurred');
+    }
+  }
+
+  // ==========================================================================
+  // Update Book
+  // ==========================================================================
+
+  /// Updates an existing book
+  ///
+  /// This method updates a book with the provided fields. Only non-null fields
+  /// in the DTO will be updated. RLS ensures only the book owner can update it.
+  ///
+  /// **Query Pattern:**
+  /// ```
+  /// UPDATE books
+  /// SET [fields from dto]
+  /// WHERE id = ? AND user_id = auth.uid()
+  /// ```
+  ///
+  /// **Parameters:**
+  /// - [id]: UUID of the book to update
+  /// - [dto]: [UpdateBookDto] containing fields to update
+  ///
+  /// **Returns:**
+  /// void (throws exception on error)
+  ///
+  /// **Throws:**
+  /// - [ValidationException]: Invalid book ID format or invalid DTO fields
+  /// - [UnauthorizedException]: Authentication failed or token expired
+  /// - [NotFoundException]: Book not found or doesn't belong to user
+  /// - [ServerException]: Database error or Supabase service unavailable
+  /// - [NoInternetException]: No network connection
+  /// - [TimeoutException]: Request took too long
+  ///
+  /// **Example:**
+  /// ```dart
+  /// final dto = UpdateBookDto(
+  ///   status: BOOK_STATUS.finished,
+  ///   lastReadPageNumber: 300,
+  /// );
+  /// await bookService.updateBook('book-uuid', dto);
+  /// ```
+  Future<void> updateBook(String id, UpdateBookDto dto) async {
+    _logger.info('Updating book: $id with data: ${dto.toRequestJson()}');
+
+    final stopwatch = Stopwatch()..start();
+
+    try {
+      // Validate book ID format
+      if (!_isValidUuid(id)) {
+        throw ValidationException('Invalid book ID format (must be UUID)');
+      }
+
+      // Convert DTO to request JSON (excludes null values)
+      final updateData = dto.toRequestJson();
+
+      // Validate that there's at least one field to update
+      if (updateData.isEmpty) {
+        throw ValidationException('No fields to update');
+      }
+
+      // Execute update
+      await _supabase
+          .from('books')
+          .update(updateData)
+          .eq('id', id)
+          .timeout(ApiConstants.defaultTimeout);
+
+      stopwatch.stop();
+      _logger.info(
+        'Successfully updated book in ${stopwatch.elapsedMilliseconds}ms',
+      );
+    } on PostgrestException catch (e) {
+      stopwatch.stop();
+      _logger.severe('Postgrest error: ${e.message} (code: ${e.code})', e);
+
+      if (e.code == 'PGRST301' || (e.message.toLowerCase().contains('jwt'))) {
+        throw UnauthorizedException(e.message);
+      } else if (e.code?.startsWith('PGRST1') ?? false) {
+        throw ValidationException(e.message);
+      } else if (e.code == 'PGRST116') {
+        throw NotFoundException('Book not found');
+      } else {
+        throw ServerException(e.message);
+      }
+    } on SocketException catch (e) {
+      stopwatch.stop();
+      _logger.warning('No internet connection: ${e.message}');
+      throw NoInternetException();
+    } on TimeoutException catch (e) {
+      stopwatch.stop();
+      _logger.warning('Request timeout: ${e.message}');
+      throw TimeoutException(
+        'Request timed out after ${ApiConstants.defaultTimeout.inSeconds}s',
+      );
+    } catch (e) {
+      stopwatch.stop();
+      _logger.severe('Unexpected error: $e', e);
+      throw ServerException('An unexpected error occurred');
+    }
+  }
+
+  // ==========================================================================
+  // Delete Book
+  // ==========================================================================
+
+  /// Deletes a book by ID
+  ///
+  /// This method permanently deletes a book and all its associated reading
+  /// sessions (via CASCADE). RLS ensures only the book owner can delete it.
+  ///
+  /// **Query Pattern:**
+  /// ```
+  /// DELETE FROM books
+  /// WHERE id = ? AND user_id = auth.uid()
+  /// ```
+  ///
+  /// **Parameters:**
+  /// - [id]: UUID of the book to delete
+  ///
+  /// **Returns:**
+  /// void (throws exception on error)
+  ///
+  /// **Throws:**
+  /// - [ValidationException]: Invalid book ID format
+  /// - [UnauthorizedException]: Authentication failed or token expired
+  /// - [NotFoundException]: Book not found or doesn't belong to user
+  /// - [ServerException]: Database error or Supabase service unavailable
+  /// - [NoInternetException]: No network connection
+  /// - [TimeoutException]: Request took too long
+  ///
+  /// **Example:**
+  /// ```dart
+  /// await bookService.deleteBook('c3e4b5a6-3b2a-4f1e-8b3d-2c1a1b0e9d8c');
+  /// ```
+  Future<void> deleteBook(String id) async {
+    _logger.info('Deleting book: $id');
+
+    final stopwatch = Stopwatch()..start();
+
+    try {
+      // Validate book ID format
+      if (!_isValidUuid(id)) {
+        throw ValidationException('Invalid book ID format (must be UUID)');
+      }
+
+      // Execute delete
+      await _supabase
+          .from('books')
+          .delete()
+          .eq('id', id)
+          .timeout(ApiConstants.defaultTimeout);
+
+      stopwatch.stop();
+      _logger.info(
+        'Successfully deleted book in ${stopwatch.elapsedMilliseconds}ms',
+      );
+    } on PostgrestException catch (e) {
+      stopwatch.stop();
+      _logger.severe('Postgrest error: ${e.message} (code: ${e.code})', e);
+
+      if (e.code == 'PGRST301' || (e.message.toLowerCase().contains('jwt'))) {
+        throw UnauthorizedException(e.message);
+      } else if (e.code == 'PGRST116') {
+        throw NotFoundException('Book not found');
+      } else {
+        throw ServerException(e.message);
+      }
+    } on SocketException catch (e) {
+      stopwatch.stop();
+      _logger.warning('No internet connection: ${e.message}');
+      throw NoInternetException();
+    } on TimeoutException catch (e) {
+      stopwatch.stop();
+      _logger.warning('Request timeout: ${e.message}');
+      throw TimeoutException(
+        'Request timed out after ${ApiConstants.defaultTimeout.inSeconds}s',
+      );
+    } catch (e) {
+      stopwatch.stop();
+      _logger.severe('Unexpected error: $e', e);
+      throw ServerException('An unexpected error occurred');
+    }
+  }
 }
