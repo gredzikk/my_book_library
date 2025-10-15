@@ -46,13 +46,25 @@ class AuthenticationScreen extends StatelessWidget {
               SupaEmailAuth(
                 showConfirmPasswordField: true,
                 redirectTo: 'io.supabase.mybooklibrary://login-callback/',
+
                 onSignInComplete: (response) {
                   // Logowanie zakończone pomyślnie
                   // AuthGate automatycznie przekieruje do HomeScreen
                 },
                 onSignUpComplete: (response) {
                   // Rejestracja zakończona pomyślnie
-                  // AuthGate automatycznie przekieruje do HomeScreen
+                  // Jeśli sesja jest null, oznacza to, że wymagane jest potwierdzenie emaila.
+                  if (response.session == null && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Rejestracja pomyślna! Sprawdź email, aby potwierdzić konto.',
+                        ),
+                        backgroundColor: Colors.green,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
                 },
                 onError: (error) {
                   // Obsługa błędów - wyświetl SnackBar
