@@ -5,6 +5,16 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Auto-increment version code based on git commits
+fun getVersionCode(): Int {
+    return try {
+        val process = Runtime.getRuntime().exec("git rev-list --count HEAD")
+        process.inputStream.bufferedReader().readText().trim().toIntOrNull() ?: 1
+    } catch (e: Exception) {
+        1 // Fallback to 1 if git is not available
+    }
+}
+
 android {
     namespace = "com.example.my_book_library"
     compileSdk = flutter.compileSdkVersion
@@ -26,7 +36,10 @@ android {
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
+        
+        // Auto-increment version code: Use Flutter's version code if specified in pubspec.yaml,
+        // otherwise auto-generate from git commit count
+        versionCode = flutter.versionCode ?: getVersionCode()
         versionName = flutter.versionName
     }
 

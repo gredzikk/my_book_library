@@ -6,13 +6,24 @@ A mobile application for Android designed for book lovers. It provides a simple,
 
 ## Table of Contents
 
-- [Project Description](#project-description)
-- [Tech Stack](#tech-stack)
-- [Getting Started Locally](#getting-started-locally)
-- [Available Scripts](#available-scripts)
-- [Project Scope](#project-scope)
-- [Project Status](#project-status)
-- [License](#license)
+- [My Book Library](#my-book-library)
+  - [Table of Contents](#table-of-contents)
+  - [Project Description](#project-description)
+    - [Key Features](#key-features)
+  - [Tech Stack](#tech-stack)
+  - [Getting Started Locally](#getting-started-locally)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+  - [Available Scripts](#available-scripts)
+    - [Development Scripts](#development-scripts)
+    - [Release Scripts](#release-scripts)
+  - [API Documentation](#api-documentation)
+    - [Genre API](#genre-api)
+  - [Project Scope](#project-scope)
+    - [In Scope (MVP)](#in-scope-mvp)
+    - [Out of Scope (Post-MVP)](#out-of-scope-post-mvp)
+  - [Project Status](#project-status)
+  - [License](#license)
 
 ## Project Description
 
@@ -65,11 +76,24 @@ To get a local copy up and running, follow these simple steps.
 
 ## Available Scripts
 
+### Development Scripts
+
 -   `flutter run`: Compiles and runs the application on a connected device or emulator.
 -   `flutter test`: Runs the unit and widget tests for the project.
 -   `flutter analyze`: Analyzes the project's Dart code for potential errors.
 -   `dart format .`: Formats all Dart files in the project according to the recommended style.
 -   `flutter pub run build_runner build`: Generates code for Freezed models and mocks.
+
+### Release Scripts
+
+Build versioned APKs for production:
+
+-   `.\scripts\build_release.ps1 -BumpType patch`: Build release APK with version bump (PowerShell - **Recommended**)
+-   `scripts\build_release.bat`: Build release APK (Windows Batch)
+-   `./scripts/build_release.sh`: Build release APK (Linux/Mac)
+-   `dart scripts/bump_version.dart [patch|minor|major]`: Manually increment version
+
+📖 **For complete release instructions, see [RELEASE_GUIDE.md](RELEASE_GUIDE.md)**
 
 ## API Documentation
 

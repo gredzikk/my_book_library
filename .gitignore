@@ -46,3 +46,6 @@ app.*.map.json
 .env
 config.env
 supabase/migrations/20251013000001_add_books_performance_indexes.sql
+
+# Release APKs (optional: remove this line if you want to commit releases)
+/releases/
