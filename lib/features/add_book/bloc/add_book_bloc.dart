@@ -104,15 +104,15 @@ class AddBookBloc extends Bloc<AddBookEvent, AddBookState> {
         final dto = event.data.toCreateBookDto();
         await _bookService.createBook(dto);
         _logger.info('Book created successfully');
+        emit(const BookSaved(message: 'Książka została dodana'));
       } else {
         // Aktualizacja istniejącej książki
         _logger.info('Updating book: ${event.bookId}');
         final dto = event.data.toUpdateBookDto();
         await _bookService.updateBook(event.bookId!, dto);
         _logger.info('Book updated successfully');
+        emit(const BookSaved(message: 'Książka została zaktualizowana'));
       }
-
-      emit(const BookSaved());
     } on ValidationException catch (e) {
       emit(AddBookError('Błąd walidacji: ${e.message}'));
     } on UnauthorizedException catch (e) {

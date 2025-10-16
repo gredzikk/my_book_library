@@ -3,6 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/book_service.dart';
 import '../../services/reading_session_service.dart';
+import '../../services/genre_service.dart';
+import '../../services/google_books_api_service.dart';
+import '../add_book/view/book_form_screen.dart';
+import '../add_book/models/add_book_form_view_model.dart';
 import 'bloc/bloc.dart';
 import 'widgets/book_info_header.dart';
 import 'widgets/book_progress_indicator.dart';
@@ -61,14 +65,7 @@ class _BookDetailView extends StatelessWidget {
                     icon: const Icon(Icons.edit),
                     tooltip: 'Edytuj',
                     onPressed: isEnabled
-                        ? () {
-                            // TODO: Navigate to edit screen
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Edycja - wkrótce dostępna'),
-                              ),
-                            );
-                          }
+                        ? () => _navigateToEditScreen(context, state)
                         : null,
                   ),
                   PopupMenuButton<String>(
@@ -125,9 +122,10 @@ class _BookDetailView extends StatelessWidget {
               ),
             );
 
-            // Navigate back if needed (e.g., after deletion)
+            // Navigate back if needed (e.g., after deletion or marking as read)
+            // Return true to indicate that the book list should be refreshed
             if (state.shouldNavigateBack) {
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(true);
             }
           }
 
@@ -204,6 +202,7 @@ class _BookDetailView extends StatelessWidget {
 
           // Show loading overlay if action is in progress
           final showLoading = state is BookDetailsActionInProgress;
+          final bottomSafeArea = MediaQuery.of(context).padding.bottom;
 
           return Stack(
             children: [
@@ -218,7 +217,12 @@ class _BookDetailView extends StatelessWidget {
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: EdgeInsets.only(
+                      left: 16.0,
+                      right: 16.0,
+                      top: 16.0,
+                      bottom: 16.0 + bottomSafeArea,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -285,6 +289,64 @@ class _BookDetailView extends StatelessWidget {
         },
       ),
     );
+  }
+
+  /// Navigates to edit screen with current book data
+  Future<void> _navigateToEditScreen(
+    BuildContext context,
+    BookDetailsState state,
+  ) async {
+    // Extract book from state
+    final book = state is BookDetailsSuccess
+        ? state.book
+        : state is BookDetailsActionFailure
+        ? state.book
+        : null;
+
+    if (book == null) return;
+
+    // Convert BookDetailDto to AddBookFormViewModel
+    final bookData = AddBookFormViewModel(
+      title: book.title,
+      author: book.author,
+      pageCount: book.pageCount,
+      genreId: book.genreId,
+      coverUrl: book.coverUrl,
+      isbn: book.isbn,
+      publisher: book.publisher,
+      publicationYear: book.publicationYear,
+    );
+
+    // Get Supabase client for services
+    final supabase = Supabase.instance.client;
+
+    // Capture navigator before async gap
+    final navigator = Navigator.of(context);
+
+    // Navigate to edit screen
+    final result = await navigator.push<bool>(
+      MaterialPageRoute(
+        builder: (context) => MultiRepositoryProvider(
+          providers: [
+            RepositoryProvider<BookService>(
+              create: (_) => BookService(supabase),
+            ),
+            RepositoryProvider<GenreService>(
+              create: (_) => GenreService(supabase),
+            ),
+            RepositoryProvider<GoogleBooksService>(
+              create: (_) => GoogleBooksService(),
+            ),
+          ],
+          child: BookFormScreen(bookData: bookData, bookId: book.id),
+        ),
+      ),
+    );
+
+    // If book was updated, refresh the details
+    if (result == true && context.mounted) {
+      context.read<BookDetailsBloc>().add(FetchBookDetails(book.id));
+    }
   }
 
   /// Shows delete confirmation dialog

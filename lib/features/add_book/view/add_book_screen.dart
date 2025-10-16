@@ -38,10 +38,12 @@ class _AddBookView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Dodaj książkę')),
       body: BlocConsumer<AddBookBloc, AddBookState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           // Obsługa nawigacji do formularza po znalezieniu książki
           if (state is BookFound) {
-            Navigator.of(context).push(
+            // Capture navigator before async gap
+            final navigator = Navigator.of(context);
+            final result = await navigator.push(
               MaterialPageRoute(
                 builder: (context) => BookFormScreen(
                   bookData: state.bookData,
@@ -49,11 +51,17 @@ class _AddBookView extends StatelessWidget {
                 ),
               ),
             );
+            // If book was saved, pop back to home screen with result
+            if (result == true) {
+              navigator.pop(true);
+            }
           }
 
           // Obsługa nawigacji do formularza gdy gatunki są załadowane
           if (state is AddBookReady && state.bookData != null) {
-            Navigator.of(context).push(
+            // Capture navigator before async gap
+            final navigator = Navigator.of(context);
+            final result = await navigator.push(
               MaterialPageRoute(
                 builder: (context) => BookFormScreen(
                   bookData: state.bookData,
@@ -61,14 +69,20 @@ class _AddBookView extends StatelessWidget {
                 ),
               ),
             );
+            // If book was saved, pop back to home screen with result
+            if (result == true) {
+              navigator.pop(true);
+            }
           }
 
           // Wyświetlanie błędów
           if (state is AddBookError) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            final messenger = ScaffoldMessenger.of(context);
+            final theme = Theme.of(context);
+            messenger.showSnackBar(
               SnackBar(
                 content: Text(state.message),
-                backgroundColor: Theme.of(context).colorScheme.error,
+                backgroundColor: theme.colorScheme.error,
                 duration: const Duration(seconds: 4),
               ),
             );
@@ -76,9 +90,15 @@ class _AddBookView extends StatelessWidget {
         },
         builder: (context, state) {
           final isLoading = state is AddBookLoading;
+          final bottomSafeArea = MediaQuery.of(context).padding.bottom;
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
+            padding: EdgeInsets.only(
+              left: 24.0,
+              right: 24.0,
+              top: 24.0,
+              bottom: 24.0 + bottomSafeArea,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -178,12 +198,16 @@ class _AddBookView extends StatelessWidget {
                 FilledButton.icon(
                   onPressed: isLoading
                       ? null
-                      : () {
-                          Navigator.of(context).push(
+                      : () async {
+                          final result = await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => const BookFormScreen(),
                             ),
                           );
+                          // If book was saved, pop back to home screen with result
+                          if (result == true && context.mounted) {
+                            Navigator.of(context).pop(true);
+                          }
                         },
                   icon: const Icon(Icons.add),
                   label: const Text('Dodaj książkę ręcznie'),

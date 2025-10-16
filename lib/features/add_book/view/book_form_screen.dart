@@ -257,7 +257,9 @@ class _BookFormViewState extends State<_BookFormView> {
 
                 // Gatunek (opcjonalne)
                 DropdownButtonFormField<String>(
-                  value: _selectedGenreId,
+                  value: _availableGenres.any((g) => g.id == _selectedGenreId)
+                      ? _selectedGenreId
+                      : null,
                   decoration: const InputDecoration(
                     labelText: 'Gatunek',
                     border: OutlineInputBorder(),

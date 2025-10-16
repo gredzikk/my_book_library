@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/types.dart';
 import '../../book_detail/book_detail_screen.dart';
+import '../bloc/bloc.dart';
 import 'book_grid_tile.dart';
 
 /// Grid widget displaying list of books
@@ -26,12 +28,18 @@ class BookGrid extends StatelessWidget {
         final book = books[index];
         return BookGridTile(
           book: book,
-          onTap: () {
-            Navigator.of(context).push(
+          onTap: () async {
+            // Navigate to book details and wait for result
+            final result = await Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => BookDetailScreen(bookId: book.id),
               ),
             );
+
+            // Refresh the list if book was modified or deleted
+            if (result == true && context.mounted) {
+              context.read<HomeScreenBloc>().add(const RefreshBooksEvent());
+            }
           },
         );
       },

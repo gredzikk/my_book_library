@@ -131,19 +131,37 @@ class UpdateBookDto with _$UpdateBookDto {
 
   /// Convert to JSON for API request (excludes null values)
   Map<String, dynamic> toRequestJson() {
-    return {
-      if (genreId != null) 'genre_id': genreId,
-      if (title != null) 'title': title,
-      if (author != null) 'author': author,
-      if (pageCount != null) 'page_count': pageCount,
-      if (coverUrl != null) 'cover_url': coverUrl,
-      if (isbn != null) 'isbn': isbn,
-      if (publisher != null) 'publisher': publisher,
-      if (publicationYear != null) 'publication_year': publicationYear,
-      if (status != null) 'status': status.toString().split('.').last,
-      if (lastReadPageNumber != null)
-        'last_read_page_number': lastReadPageNumber,
-    };
+    final map = <String, dynamic>{};
+    
+    // Always include non-null values, handle empty strings for optional fields
+    if (title != null) map['title'] = title;
+    if (author != null) map['author'] = author;
+    if (pageCount != null) map['page_count'] = pageCount;
+    
+    // For optional fields, include null to clear the field if needed
+    if (genreId != null) {
+      map['genre_id'] = genreId;
+    }
+    if (coverUrl != null) {
+      map['cover_url'] = coverUrl!.isEmpty ? null : coverUrl;
+    }
+    if (isbn != null) {
+      map['isbn'] = isbn!.isEmpty ? null : isbn;
+    }
+    if (publisher != null) {
+      map['publisher'] = publisher!.isEmpty ? null : publisher;
+    }
+    if (publicationYear != null) {
+      map['publication_year'] = publicationYear;
+    }
+    if (status != null) {
+      map['status'] = status.toString().split('.').last;
+    }
+    if (lastReadPageNumber != null) {
+      map['last_read_page_number'] = lastReadPageNumber;
+    }
+    
+    return map;
   }
 }
 

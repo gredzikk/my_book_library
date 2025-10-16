@@ -81,6 +81,8 @@ class _FilterSortModalState extends State<FilterSortModal> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomSafeArea = MediaQuery.of(context).padding.bottom;
+
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
       minChildSize: 0.5,
@@ -164,9 +166,14 @@ class _FilterSortModalState extends State<FilterSortModal> {
                 ),
               ),
 
-              // Apply button
+              // Apply button with safe area padding
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 16,
+                  bottom: 16 + bottomSafeArea,
+                ),
                 child: FilledButton(
                   onPressed: _applyFilters,
                   style: FilledButton.styleFrom(

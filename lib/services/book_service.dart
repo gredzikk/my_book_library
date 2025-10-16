@@ -530,12 +530,18 @@ class BookService {
         throw ValidationException('No fields to update');
       }
 
-      // Execute update
-      await _supabase
+      // Execute update and check count
+      final response = await _supabase
           .from('books')
           .update(updateData)
           .eq('id', id)
-          .timeout(ApiConstants.defaultTimeout);
+          .select('id')
+          .timeout(ApiConstants.defaultTimeout) as List;
+
+      // Check if any rows were updated
+      if (response.isEmpty) {
+        throw NotFoundException('Book not found or you don\'t have permission to update it');
+      }
 
       stopwatch.stop();
       _logger.info(

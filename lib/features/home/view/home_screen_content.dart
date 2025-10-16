@@ -66,10 +66,16 @@ class HomeScreenContent extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
+        onPressed: () async {
+          // Navigate to add book screen and wait for result
+          final result = await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const AddBookScreen()),
           );
+
+          // Refresh the list if a book was added/modified
+          if (result == true && context.mounted) {
+            context.read<HomeScreenBloc>().add(const RefreshBooksEvent());
+          }
         },
         child: const Icon(Icons.add),
       ),

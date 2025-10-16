@@ -97,6 +97,12 @@ class _EndSessionDialogState extends State<EndSessionDialog> {
 
     return AlertDialog(
       title: const Text('Zakończ sesję czytania'),
+      insetPadding: EdgeInsets.only(
+        left: 16.0,
+        right: 16.0,
+        top: 24.0,
+        bottom: 24.0 + MediaQuery.of(context).padding.bottom,
+      ),
       content: Form(
         key: _formKey,
         child: Column(
