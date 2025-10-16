@@ -1,6 +1,5 @@
 // lib/services/google_books_service.dart
 
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/types.dart';
@@ -36,7 +35,6 @@ class GoogleBooksService {
       return null; // Nie znaleziono książki
     } catch (e) {
       // Loguj błąd
-      print('Error fetching book from Google Books API: $e');
       return null;
     }
   }

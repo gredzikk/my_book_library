@@ -8,6 +8,7 @@
 ///
 /// All operations are automatically protected by Row-Level Security (RLS),
 /// ensuring users can only access their own books.
+library;
 
 import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -94,7 +95,7 @@ class BookService {
   /// );
   /// ```
   Future<List<BookListItemDto>> listBooks({
-    BOOK_STATUS? status,
+    BookStatus? status,
     String? genreId,
     String orderBy = 'title',
     String orderDirection = 'asc',
@@ -220,7 +221,7 @@ class BookService {
   /// - genreId: must be a valid UUID format (if provided)
   /// - orderDirection: must be 'asc' or 'desc' (case-insensitive)
   void _validateListBooksParameters(
-    BOOK_STATUS? status,
+    BookStatus? status,
     String? genreId,
     int limit,
     int offset,
@@ -344,6 +345,109 @@ class BookService {
         throw UnauthorizedException(e.message);
       } else if (e.code == 'PGRST116') {
         throw NotFoundException('Book not found');
+      } else {
+        throw ServerException(e.message);
+      }
+    } on FormatException catch (e) {
+      stopwatch.stop();
+      _logger.severe('Failed to parse response: ${e.message}', e);
+      throw ParseException('Invalid response format from server');
+    } on SocketException catch (e) {
+      stopwatch.stop();
+      _logger.warning('No internet connection: ${e.message}');
+      throw NoInternetException();
+    } on TimeoutException catch (e) {
+      stopwatch.stop();
+      _logger.warning('Request timeout: ${e.message}');
+      throw TimeoutException(
+        'Request timed out after ${ApiConstants.defaultTimeout.inSeconds}s',
+      );
+    } catch (e) {
+      stopwatch.stop();
+      _logger.severe('Unexpected error: $e', e);
+      throw ServerException('An unexpected error occurred');
+    }
+  }
+
+  // ==========================================================================
+  // Create Book
+  // ==========================================================================
+
+  /// Creates a new book
+  ///
+  /// This method creates a new book for the authenticated user. The user_id
+  /// is automatically set by the database based on auth.uid(). Default values
+  /// are set for status (NOT_STARTED) and last_read_page_number (0).
+  ///
+  /// **Query Pattern:**
+  /// ```
+  /// INSERT INTO books (title, author, page_count, ...)
+  /// VALUES (?, ?, ?, ...)
+  /// RETURNING *
+  /// ```
+  ///
+  /// **Parameters:**
+  /// - [dto]: [CreateBookDto] containing book data
+  ///
+  /// **Returns:**
+  /// [BookListItemDto] of the created book
+  ///
+  /// **Throws:**
+  /// - [ValidationException]: Invalid DTO fields (e.g., empty title, invalid page count)
+  /// - [UnauthorizedException]: Authentication failed or token expired
+  /// - [ServerException]: Database error or Supabase service unavailable
+  /// - [NoInternetException]: No network connection
+  /// - [TimeoutException]: Request took too long
+  /// - [ParseException]: Failed to parse server response
+  ///
+  /// **Example:**
+  /// ```dart
+  /// final dto = CreateBookDto(
+  ///   title: 'The Hobbit',
+  ///   author: 'J.R.R. Tolkien',
+  ///   pageCount: 310,
+  ///   genreId: 'genre-uuid',
+  /// );
+  /// final book = await bookService.createBook(dto);
+  /// ```
+  Future<BookListItemDto> createBook(CreateBookDto dto) async {
+    _logger.info('Creating book: ${dto.title} by ${dto.author}');
+
+    final stopwatch = Stopwatch()..start();
+
+    try {
+      // Convert DTO to request JSON
+      final bookData = dto.toRequestJson();
+
+      // Execute insert and return the created book
+      final response = await _supabase
+          .from('books')
+          .insert(bookData)
+          .select('*, genres(name)')
+          .single()
+          .timeout(ApiConstants.defaultTimeout);
+
+      stopwatch.stop();
+      _logger.info(
+        'Successfully created book in ${stopwatch.elapsedMilliseconds}ms',
+      );
+
+      // Parse response to BookListItemDto
+      return BookListItemDto.fromJson(response);
+    } on PostgrestException catch (e) {
+      stopwatch.stop();
+      _logger.severe('Postgrest error: ${e.message} (code: ${e.code})', e);
+
+      if (e.code == 'PGRST301' || (e.message.toLowerCase().contains('jwt'))) {
+        throw UnauthorizedException(e.message);
+      } else if (e.code?.startsWith('PGRST1') ?? false) {
+        throw ValidationException(e.message);
+      } else if (e.code == '23505') {
+        // Unique constraint violation
+        throw ValidationException('Book with this ISBN already exists');
+      } else if (e.code == '23503') {
+        // Foreign key violation (invalid genre_id)
+        throw ValidationException('Invalid genre ID');
       } else {
         throw ServerException(e.message);
       }

@@ -25,7 +25,7 @@ class BookListItemDto with _$BookListItemDto {
     String? isbn,
     String? publisher,
     @JsonKey(name: 'publication_year') int? publicationYear,
-    required BOOK_STATUS status,
+    required BookStatus status,
     @JsonKey(name: 'last_read_page_number') required int lastReadPageNumber,
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
@@ -120,7 +120,7 @@ class UpdateBookDto with _$UpdateBookDto {
     String? isbn,
     String? publisher,
     @JsonKey(name: 'publication_year') int? publicationYear,
-    BOOK_STATUS? status,
+    BookStatus? status,
     @JsonKey(name: 'last_read_page_number') int? lastReadPageNumber,
   }) = _UpdateBookDto;
 

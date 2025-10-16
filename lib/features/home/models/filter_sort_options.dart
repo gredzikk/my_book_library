@@ -4,7 +4,7 @@ import '../../../models/database_types.dart';
 /// ViewModel for filter and sort options on the Home Screen
 class FilterSortOptions extends Equatable {
   /// Filter by book status
-  final BOOK_STATUS? status;
+  final BookStatus? status;
 
   /// Filter by genre ID
   final String? genreId;
@@ -29,7 +29,7 @@ class FilterSortOptions extends Equatable {
 
   /// Creates a copy with modified fields
   FilterSortOptions copyWith({
-    BOOK_STATUS? status,
+    BookStatus? status,
     String? genreId,
     String? orderBy,
     String? orderDirection,

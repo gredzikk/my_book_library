@@ -101,23 +101,23 @@ class BookGridTile extends StatelessWidget {
     Color color;
 
     switch (book.status) {
-      case BOOK_STATUS.in_progress:
+      case BookStatus.in_progress:
         icon = Icons.play_circle_filled;
         color = Colors.blue;
         break;
-      case BOOK_STATUS.finished:
+      case BookStatus.finished:
         icon = Icons.check_circle;
         color = Colors.green;
         break;
-      case BOOK_STATUS.planned:
+      case BookStatus.planned:
         icon = Icons.schedule;
         color = Colors.orange;
         break;
-      case BOOK_STATUS.abandoned:
+      case BookStatus.abandoned:
         icon = Icons.cancel;
         color = Colors.red;
         break;
-      case BOOK_STATUS.unread:
+      case BookStatus.unread:
         icon = Icons.circle_outlined;
         color = Colors.grey;
         break;

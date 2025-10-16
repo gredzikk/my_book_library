@@ -17,7 +17,7 @@ class FilterSortModal extends StatefulWidget {
 }
 
 class _FilterSortModalState extends State<FilterSortModal> {
-  late BOOK_STATUS? _selectedStatus;
+  late BookStatus? _selectedStatus;
   late String? _selectedGenreId;
   late String _selectedOrderBy;
   late String _selectedOrderDirection;
@@ -196,7 +196,7 @@ class _FilterSortModalState extends State<FilterSortModal> {
             });
           },
         ),
-        ...BOOK_STATUS.values.map((status) {
+        ...BookStatus.values.map((status) {
           return FilterChip(
             label: Text(_getStatusLabel(status)),
             selected: _selectedStatus == status,
@@ -295,17 +295,17 @@ class _FilterSortModalState extends State<FilterSortModal> {
     );
   }
 
-  String _getStatusLabel(BOOK_STATUS status) {
+  String _getStatusLabel(BookStatus status) {
     switch (status) {
-      case BOOK_STATUS.unread:
+      case BookStatus.unread:
         return 'Nieprzeczytana';
-      case BOOK_STATUS.in_progress:
+      case BookStatus.in_progress:
         return 'W trakcie';
-      case BOOK_STATUS.finished:
+      case BookStatus.finished:
         return 'Ukończona';
-      case BOOK_STATUS.abandoned:
+      case BookStatus.abandoned:
         return 'Porzucona';
-      case BOOK_STATUS.planned:
+      case BookStatus.planned:
         return 'Planowana';
     }
   }

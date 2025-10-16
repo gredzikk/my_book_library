@@ -2,6 +2,7 @@
 ///
 /// This widget automatically fetches genres from the API and displays them
 /// in a dropdown menu. It handles loading, error, and empty states gracefully.
+library;
 
 import 'package:flutter/material.dart';
 import '../services/genre_service.dart';
@@ -53,14 +54,14 @@ class GenreSelector extends StatefulWidget {
   final GenreService genreService;
 
   const GenreSelector({
-    Key? key,
+    super.key,
     this.selectedGenreId,
     required this.onChanged,
     required this.genreService,
     this.isRequired = false,
     this.labelText,
     this.hintText,
-  }) : super(key: key);
+  });
 
   @override
   State<GenreSelector> createState() => _GenreSelectorState();

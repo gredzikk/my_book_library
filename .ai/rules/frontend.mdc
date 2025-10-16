@@ -16,6 +16,7 @@
 - **Theming and style:** Use material3 style guidelines.
 - **Component-Based UI:** Build the UI from small, reusable widgets. Avoid creating massive, monolithic widget classes.
 - **Styling:** Define and use a consistent theme (colors, fonts, text styles) via `ThemeData`. Avoid hardcoding style values directly in widgets.
+- **Opacity:** Avoid using .withOpacity(value) properties as they are deprecated. Use .withValues() instead.
 - **Navigation:** Implement navigation using a standard Flutter navigator or a type-safe routing package like `go_router`.
 - **User Feedback:** Provide clear user feedback for all operations, including loading indicators, success messages, and descriptive error dialogs.
 

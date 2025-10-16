@@ -43,7 +43,8 @@ extension SupadartClient on SupabaseClient {
 extension SupadartStorageClient on SupabaseStorageClient {}
 
 // Enums
-enum BOOK_STATUS { unread, in_progress, finished, abandoned, planned }
+// ignore: constant_identifier_names
+enum BookStatus { unread, in_progress, finished, abandoned, planned }
 
 // Utils
 class Books implements SupadartClass<Books> {
@@ -57,7 +58,7 @@ class Books implements SupadartClass<Books> {
   final String? isbn;
   final String? publisher;
   final int? publicationYear;
-  final BOOK_STATUS status;
+  final BookStatus status;
   final int lastReadPageNumber;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -114,7 +115,7 @@ class Books implements SupadartClass<Books> {
     String? isbn,
     String? publisher,
     int? publicationYear,
-    BOOK_STATUS? status,
+    BookStatus? status,
     int? lastReadPageNumber,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -149,7 +150,7 @@ class Books implements SupadartClass<Books> {
     String? isbn,
     String? publisher,
     int? publicationYear,
-    required BOOK_STATUS status,
+    required BookStatus status,
     required int lastReadPageNumber,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -183,7 +184,7 @@ class Books implements SupadartClass<Books> {
     String? isbn,
     String? publisher,
     int? publicationYear,
-    BOOK_STATUS? status,
+    BookStatus? status,
     int? lastReadPageNumber,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -227,8 +228,8 @@ class Books implements SupadartClass<Books> {
           ? int.parse(jsonn['publication_year'].toString())
           : null,
       status: jsonn['status'] != null
-          ? BOOK_STATUS.values.byName(jsonn['status'].toString())
-          : BOOK_STATUS.values.first,
+          ? BookStatus.values.byName(jsonn['status'].toString())
+          : BookStatus.values.first,
       lastReadPageNumber: jsonn['last_read_page_number'] != null
           ? int.parse(jsonn['last_read_page_number'].toString())
           : 0,

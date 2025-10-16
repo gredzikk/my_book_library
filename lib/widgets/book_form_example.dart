@@ -2,6 +2,7 @@
 ///
 /// This is a reference implementation showing best practices for using
 /// the GenreSelector in a book creation/editing form.
+library;
 
 import 'package:flutter/material.dart';
 import '../services/genre_service.dart';
@@ -14,8 +15,7 @@ import 'genre_selector.dart';
 class BookFormExample extends StatefulWidget {
   final GenreService genreService;
 
-  const BookFormExample({Key? key, required this.genreService})
-    : super(key: key);
+  const BookFormExample({super.key, required this.genreService});
 
   @override
   State<BookFormExample> createState() => _BookFormExampleState();

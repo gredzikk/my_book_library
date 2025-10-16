@@ -24,7 +24,7 @@ class BookService {
   }
 
   /// Fetch books filtered by status
-  Future<List<BookListItemDto>> getBooksByStatus(BOOK_STATUS status) async {
+  Future<List<BookListItemDto>> getBooksByStatus(BookStatus status) async {
     final statusString = status.toString().split('.').last;
     final response = await _supabase.books
         .select('*, genres(name)')
@@ -73,7 +73,7 @@ class BookService {
   /// Mark a book as finished
   Future<BookDetailDto> markBookAsFinished(String bookId, int pageCount) async {
     final updateDto = UpdateBookDto(
-      status: BOOK_STATUS.finished,
+      status: BookStatus.finished,
       lastReadPageNumber: pageCount,
     );
 
@@ -189,7 +189,7 @@ class BookService {
     final book = await createBook(createDto);
 
     // Step 2: Update status to in_progress
-    final updateDto = UpdateBookDto(status: BOOK_STATUS.in_progress);
+    final updateDto = UpdateBookDto(status: BookStatus.in_progress);
 
     final updatedBook = await updateBook(book.id, updateDto);
 
@@ -224,7 +224,7 @@ class BookService {
       'sessionId': sessionId,
       'book': book,
       'statistics': stats,
-      'isFinished': book?.status == BOOK_STATUS.finished,
+      'isFinished': book?.status == BookStatus.finished,
     };
   }
 
@@ -232,18 +232,18 @@ class BookService {
   Future<Map<String, dynamic>> getReadingProgress() async {
     final allBooks = await getAllBooks();
 
-    final unread = allBooks.where((b) => b.status == BOOK_STATUS.unread).length;
+    final unread = allBooks.where((b) => b.status == BookStatus.unread).length;
     final inProgress = allBooks
-        .where((b) => b.status == BOOK_STATUS.in_progress)
+        .where((b) => b.status == BookStatus.in_progress)
         .length;
     final finished = allBooks
-        .where((b) => b.status == BOOK_STATUS.finished)
+        .where((b) => b.status == BookStatus.finished)
         .length;
     final abandoned = allBooks
-        .where((b) => b.status == BOOK_STATUS.abandoned)
+        .where((b) => b.status == BookStatus.abandoned)
         .length;
     final planned = allBooks
-        .where((b) => b.status == BOOK_STATUS.planned)
+        .where((b) => b.status == BookStatus.planned)
         .length;
 
     // Calculate total pages read

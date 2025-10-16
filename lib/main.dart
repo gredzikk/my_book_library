@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'widgets/auth_gate.dart';
 import 'services/book_service.dart';
 import 'services/genre_service.dart';
+import 'services/google_books_api_service.dart';
 
 Future<void> main() async {
   // Configure logging
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         RepositoryProvider(
           create: (context) => GenreService(Supabase.instance.client),
         ),
+        RepositoryProvider(create: (context) => GoogleBooksService()),
       ],
       child: MaterialApp(
         title: 'My Book Library',

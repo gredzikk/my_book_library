@@ -47,7 +47,7 @@ class BookActionButtons extends StatelessWidget {
             const SizedBox(height: 12),
 
             // Show "Mark as read" button if not already finished
-            if (book.status != BOOK_STATUS.finished)
+            if (book.status != BookStatus.finished)
               OutlinedButton.icon(
                 onPressed: onMarkAsRead,
                 icon: const Icon(Icons.check_circle_outline),
@@ -70,20 +70,20 @@ class BookActionButtons extends StatelessWidget {
     IconData icon;
 
     switch (book.status) {
-      case BOOK_STATUS.unread:
-      case BOOK_STATUS.planned:
+      case BookStatus.unread:
+      case BookStatus.planned:
         label = 'Rozpocznij czytanie';
         icon = Icons.play_arrow;
         break;
-      case BOOK_STATUS.in_progress:
+      case BookStatus.in_progress:
         label = 'Kontynuuj czytanie';
         icon = Icons.auto_stories;
         break;
-      case BOOK_STATUS.finished:
+      case BookStatus.finished:
         label = 'Przeczytaj ponownie';
         icon = Icons.refresh;
         break;
-      case BOOK_STATUS.abandoned:
+      case BookStatus.abandoned:
         label = 'Wznów czytanie';
         icon = Icons.replay;
         break;

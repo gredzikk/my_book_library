@@ -5,6 +5,7 @@
 ///
 /// All operations are automatically protected by Row-Level Security (RLS).
 /// Genres are read-only for end users and managed by database administrators.
+library;
 
 import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';

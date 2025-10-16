@@ -50,7 +50,7 @@ class BookProgressIndicator extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 12,
-                backgroundColor: colorScheme.surfaceVariant,
+                backgroundColor: colorScheme.surfaceContainerHighest,
                 valueColor: AlwaysStoppedAnimation<Color>(
                   _getProgressColor(colorScheme),
                 ),
@@ -82,7 +82,7 @@ class BookProgressIndicator extends StatelessWidget {
             ),
 
             // Additional info for in-progress books
-            if (book.status == BOOK_STATUS.in_progress &&
+            if (book.status == BookStatus.in_progress &&
                 book.lastReadPageNumber > 0) ...[
               const SizedBox(height: 8),
               Text(
@@ -108,13 +108,13 @@ class BookProgressIndicator extends StatelessWidget {
   /// Gets the appropriate color based on book status
   Color _getProgressColor(ColorScheme colorScheme) {
     switch (book.status) {
-      case BOOK_STATUS.finished:
+      case BookStatus.finished:
         return Colors.green;
-      case BOOK_STATUS.in_progress:
+      case BookStatus.in_progress:
         return colorScheme.primary;
-      case BOOK_STATUS.unread:
-      case BOOK_STATUS.planned:
-      case BOOK_STATUS.abandoned:
+      case BookStatus.unread:
+      case BookStatus.planned:
+      case BookStatus.abandoned:
         return colorScheme.outline;
     }
   }
@@ -130,31 +130,31 @@ class BookProgressIndicator extends StatelessWidget {
     String label;
 
     switch (book.status) {
-      case BOOK_STATUS.unread:
+      case BookStatus.unread:
         backgroundColor = colorScheme.secondaryContainer;
         textColor = colorScheme.onSecondaryContainer;
         icon = Icons.schedule;
         label = 'Nieprzeczytana';
         break;
-      case BOOK_STATUS.planned:
+      case BookStatus.planned:
         backgroundColor = colorScheme.tertiaryContainer;
         textColor = colorScheme.onTertiaryContainer;
         icon = Icons.bookmark_outline;
         label = 'Planowana';
         break;
-      case BOOK_STATUS.in_progress:
+      case BookStatus.in_progress:
         backgroundColor = colorScheme.primaryContainer;
         textColor = colorScheme.onPrimaryContainer;
         icon = Icons.auto_stories;
         label = 'W trakcie';
         break;
-      case BOOK_STATUS.finished:
+      case BookStatus.finished:
         backgroundColor = Colors.green.shade100;
         textColor = Colors.green.shade900;
         icon = Icons.check_circle;
         label = 'Przeczytana';
         break;
-      case BOOK_STATUS.abandoned:
+      case BookStatus.abandoned:
         backgroundColor = colorScheme.errorContainer;
         textColor = colorScheme.onErrorContainer;
         icon = Icons.cancel_outlined;

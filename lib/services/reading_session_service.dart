@@ -35,6 +35,7 @@
 /// );
 /// final sessionId = await service.endReadingSession(dto);
 /// ```
+library;
 
 import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';

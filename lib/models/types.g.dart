@@ -19,7 +19,7 @@ _$BookListItemDtoImpl _$$BookListItemDtoImplFromJson(
   isbn: json['isbn'] as String?,
   publisher: json['publisher'] as String?,
   publicationYear: (json['publication_year'] as num?)?.toInt(),
-  status: $enumDecode(_$BOOK_STATUSEnumMap, json['status']),
+  status: $enumDecode(_$BookStatusEnumMap, json['status']),
   lastReadPageNumber: (json['last_read_page_number'] as num).toInt(),
   createdAt: DateTime.parse(json['created_at'] as String),
   updatedAt: DateTime.parse(json['updated_at'] as String),
@@ -41,19 +41,19 @@ Map<String, dynamic> _$$BookListItemDtoImplToJson(
   'isbn': instance.isbn,
   'publisher': instance.publisher,
   'publication_year': instance.publicationYear,
-  'status': _$BOOK_STATUSEnumMap[instance.status]!,
+  'status': _$BookStatusEnumMap[instance.status]!,
   'last_read_page_number': instance.lastReadPageNumber,
   'created_at': instance.createdAt.toIso8601String(),
   'updated_at': instance.updatedAt.toIso8601String(),
   'genres': instance.genres,
 };
 
-const _$BOOK_STATUSEnumMap = {
-  BOOK_STATUS.unread: 'unread',
-  BOOK_STATUS.in_progress: 'in_progress',
-  BOOK_STATUS.finished: 'finished',
-  BOOK_STATUS.abandoned: 'abandoned',
-  BOOK_STATUS.planned: 'planned',
+const _$BookStatusEnumMap = {
+  BookStatus.unread: 'unread',
+  BookStatus.in_progress: 'in_progress',
+  BookStatus.finished: 'finished',
+  BookStatus.abandoned: 'abandoned',
+  BookStatus.planned: 'planned',
 };
 
 _$GenreEmbeddedDtoImpl _$$GenreEmbeddedDtoImplFromJson(
@@ -98,7 +98,7 @@ _$UpdateBookDtoImpl _$$UpdateBookDtoImplFromJson(Map<String, dynamic> json) =>
       isbn: json['isbn'] as String?,
       publisher: json['publisher'] as String?,
       publicationYear: (json['publication_year'] as num?)?.toInt(),
-      status: $enumDecodeNullable(_$BOOK_STATUSEnumMap, json['status']),
+      status: $enumDecodeNullable(_$BookStatusEnumMap, json['status']),
       lastReadPageNumber: (json['last_read_page_number'] as num?)?.toInt(),
     );
 
@@ -112,7 +112,7 @@ Map<String, dynamic> _$$UpdateBookDtoImplToJson(_$UpdateBookDtoImpl instance) =>
       'isbn': instance.isbn,
       'publisher': instance.publisher,
       'publication_year': instance.publicationYear,
-      'status': _$BOOK_STATUSEnumMap[instance.status],
+      'status': _$BookStatusEnumMap[instance.status],
       'last_read_page_number': instance.lastReadPageNumber,
     };
 

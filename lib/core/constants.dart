@@ -5,6 +5,7 @@
 /// - Network timeouts
 /// - Cache durations
 /// - Retry policies
+library;
 
 // ============================================================================
 // API Constants

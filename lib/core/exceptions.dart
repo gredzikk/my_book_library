@@ -17,6 +17,7 @@
 ///   - DataException (data processing errors)
 ///     - ParseException
 ///     - InvalidDataException
+library;
 
 // ============================================================================
 // Base Exception
@@ -48,7 +49,7 @@ abstract class AppException implements Exception {
 /// Used for errors that occur during network communication,
 /// such as connection failures or timeouts.
 class NetworkException extends AppException {
-  NetworkException(String message, [String? details]) : super(message, details);
+  NetworkException(super.message, [super.details]);
 }
 
 /// Exception thrown when there is no internet connection
@@ -64,7 +65,7 @@ class NoInternetException extends NetworkException {
 /// This occurs when the server takes too long to respond
 /// or the connection is too slow.
 class TimeoutException extends NetworkException {
-  TimeoutException(String message) : super(message);
+  TimeoutException(super.message);
 }
 
 // ============================================================================
@@ -79,8 +80,7 @@ class ApiException extends AppException {
   /// HTTP status code (e.g., 400, 401, 404, 500)
   final int? statusCode;
 
-  ApiException(String message, [this.statusCode, String? details])
-    : super(message, details);
+  ApiException(super.message, [this.statusCode, super.details]);
 }
 
 /// Exception thrown when authentication is required or has failed (401)
@@ -152,7 +152,7 @@ class ServerException extends ApiException {
 /// Used for errors that occur during data parsing, validation,
 /// or transformation on the server or client side.
 class DataException extends AppException {
-  DataException(String message, [String? details]) : super(message, details);
+  DataException(super.message, [super.details]);
 }
 
 /// Exception thrown when JSON parsing fails
@@ -164,7 +164,7 @@ class DataException extends AppException {
 ///
 /// Recommended action: Log the error and show generic error to user.
 class ParseException extends DataException {
-  ParseException(String message) : super(message);
+  ParseException(super.message);
 }
 
 /// Exception thrown when data validation fails
@@ -176,5 +176,5 @@ class ParseException extends DataException {
 ///
 /// Recommended action: Show validation errors to user.
 class InvalidDataException extends DataException {
-  InvalidDataException(String message) : super(message);
+  InvalidDataException(super.message);
 }

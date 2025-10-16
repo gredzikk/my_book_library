@@ -116,7 +116,7 @@ class BookDetailsBloc extends Bloc<BookDetailsEvent, BookDetailsState> {
     try {
       // Update book status to finished and set last read page to page count
       final dto = UpdateBookDto(
-        status: BOOK_STATUS.finished,
+        status: BookStatus.finished,
         lastReadPageNumber: _cachedBook!.pageCount,
       );
 

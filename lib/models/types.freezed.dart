@@ -36,7 +36,7 @@ mixin _$BookListItemDto {
   String? get publisher => throw _privateConstructorUsedError;
   @JsonKey(name: 'publication_year')
   int? get publicationYear => throw _privateConstructorUsedError;
-  BOOK_STATUS get status => throw _privateConstructorUsedError;
+  BookStatus get status => throw _privateConstructorUsedError;
   @JsonKey(name: 'last_read_page_number')
   int get lastReadPageNumber => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
@@ -73,7 +73,7 @@ abstract class $BookListItemDtoCopyWith<$Res> {
     String? isbn,
     String? publisher,
     @JsonKey(name: 'publication_year') int? publicationYear,
-    BOOK_STATUS status,
+    BookStatus status,
     @JsonKey(name: 'last_read_page_number') int lastReadPageNumber,
     @JsonKey(name: 'created_at') DateTime createdAt,
     @JsonKey(name: 'updated_at') DateTime updatedAt,
@@ -159,7 +159,7 @@ class _$BookListItemDtoCopyWithImpl<$Res, $Val extends BookListItemDto>
             status: null == status
                 ? _value.status
                 : status // ignore: cast_nullable_to_non_nullable
-                      as BOOK_STATUS,
+                      as BookStatus,
             lastReadPageNumber: null == lastReadPageNumber
                 ? _value.lastReadPageNumber
                 : lastReadPageNumber // ignore: cast_nullable_to_non_nullable
@@ -216,7 +216,7 @@ abstract class _$$BookListItemDtoImplCopyWith<$Res>
     String? isbn,
     String? publisher,
     @JsonKey(name: 'publication_year') int? publicationYear,
-    BOOK_STATUS status,
+    BookStatus status,
     @JsonKey(name: 'last_read_page_number') int lastReadPageNumber,
     @JsonKey(name: 'created_at') DateTime createdAt,
     @JsonKey(name: 'updated_at') DateTime updatedAt,
@@ -302,7 +302,7 @@ class __$$BookListItemDtoImplCopyWithImpl<$Res>
         status: null == status
             ? _value.status
             : status // ignore: cast_nullable_to_non_nullable
-                  as BOOK_STATUS,
+                  as BookStatus,
         lastReadPageNumber: null == lastReadPageNumber
             ? _value.lastReadPageNumber
             : lastReadPageNumber // ignore: cast_nullable_to_non_nullable
@@ -374,7 +374,7 @@ class _$BookListItemDtoImpl implements _BookListItemDto {
   @JsonKey(name: 'publication_year')
   final int? publicationYear;
   @override
-  final BOOK_STATUS status;
+  final BookStatus status;
   @override
   @JsonKey(name: 'last_read_page_number')
   final int lastReadPageNumber;
@@ -472,7 +472,7 @@ abstract class _BookListItemDto implements BookListItemDto {
     final String? isbn,
     final String? publisher,
     @JsonKey(name: 'publication_year') final int? publicationYear,
-    required final BOOK_STATUS status,
+    required final BookStatus status,
     @JsonKey(name: 'last_read_page_number')
     required final int lastReadPageNumber,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
@@ -509,7 +509,7 @@ abstract class _BookListItemDto implements BookListItemDto {
   @JsonKey(name: 'publication_year')
   int? get publicationYear;
   @override
-  BOOK_STATUS get status;
+  BookStatus get status;
   @override
   @JsonKey(name: 'last_read_page_number')
   int get lastReadPageNumber;
@@ -1033,7 +1033,7 @@ mixin _$UpdateBookDto {
   String? get publisher => throw _privateConstructorUsedError;
   @JsonKey(name: 'publication_year')
   int? get publicationYear => throw _privateConstructorUsedError;
-  BOOK_STATUS? get status => throw _privateConstructorUsedError;
+  BookStatus? get status => throw _privateConstructorUsedError;
   @JsonKey(name: 'last_read_page_number')
   int? get lastReadPageNumber => throw _privateConstructorUsedError;
 
@@ -1063,7 +1063,7 @@ abstract class $UpdateBookDtoCopyWith<$Res> {
     String? isbn,
     String? publisher,
     @JsonKey(name: 'publication_year') int? publicationYear,
-    BOOK_STATUS? status,
+    BookStatus? status,
     @JsonKey(name: 'last_read_page_number') int? lastReadPageNumber,
   });
 }
@@ -1131,7 +1131,7 @@ class _$UpdateBookDtoCopyWithImpl<$Res, $Val extends UpdateBookDto>
             status: freezed == status
                 ? _value.status
                 : status // ignore: cast_nullable_to_non_nullable
-                      as BOOK_STATUS?,
+                      as BookStatus?,
             lastReadPageNumber: freezed == lastReadPageNumber
                 ? _value.lastReadPageNumber
                 : lastReadPageNumber // ignore: cast_nullable_to_non_nullable
@@ -1160,7 +1160,7 @@ abstract class _$$UpdateBookDtoImplCopyWith<$Res>
     String? isbn,
     String? publisher,
     @JsonKey(name: 'publication_year') int? publicationYear,
-    BOOK_STATUS? status,
+    BookStatus? status,
     @JsonKey(name: 'last_read_page_number') int? lastReadPageNumber,
   });
 }
@@ -1227,7 +1227,7 @@ class __$$UpdateBookDtoImplCopyWithImpl<$Res>
         status: freezed == status
             ? _value.status
             : status // ignore: cast_nullable_to_non_nullable
-                  as BOOK_STATUS?,
+                  as BookStatus?,
         lastReadPageNumber: freezed == lastReadPageNumber
             ? _value.lastReadPageNumber
             : lastReadPageNumber // ignore: cast_nullable_to_non_nullable
@@ -1277,7 +1277,7 @@ class _$UpdateBookDtoImpl extends _UpdateBookDto {
   @JsonKey(name: 'publication_year')
   final int? publicationYear;
   @override
-  final BOOK_STATUS? status;
+  final BookStatus? status;
   @override
   @JsonKey(name: 'last_read_page_number')
   final int? lastReadPageNumber;
@@ -1349,7 +1349,7 @@ abstract class _UpdateBookDto extends UpdateBookDto {
     final String? isbn,
     final String? publisher,
     @JsonKey(name: 'publication_year') final int? publicationYear,
-    final BOOK_STATUS? status,
+    final BookStatus? status,
     @JsonKey(name: 'last_read_page_number') final int? lastReadPageNumber,
   }) = _$UpdateBookDtoImpl;
   const _UpdateBookDto._() : super._();
@@ -1378,7 +1378,7 @@ abstract class _UpdateBookDto extends UpdateBookDto {
   @JsonKey(name: 'publication_year')
   int? get publicationYear;
   @override
-  BOOK_STATUS? get status;
+  BookStatus? get status;
   @override
   @JsonKey(name: 'last_read_page_number')
   int? get lastReadPageNumber;
