@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
+import 'barcode_scanner_screen.dart';
 
 /// Widget przycisku do skanowania ISBN
 ///
-/// PLACEHOLDER - wymaga dodania biblioteki mobile_scanner do pubspec.yaml
-///
-/// Aby włączyć skanowanie:
-/// 1. Dodaj do pubspec.yaml: mobile_scanner: ^5.0.0
-/// 2. Odkomentuj implementację w _handleScan()
-/// 3. Dodaj odpowiednie uprawnienia w AndroidManifest.xml i Info.plist
+/// Otwiera ekran skanowania kodów kreskowych używając biblioteki mobile_scanner.
+/// Po zeskanowaniu ISBN wywołuje callback onScanned.
 class ScanIsbnButton extends StatelessWidget {
   final bool enabled;
   final void Function(String isbn) onScanned;
@@ -19,46 +16,13 @@ class ScanIsbnButton extends StatelessWidget {
   });
 
   Future<void> _handleScan(BuildContext context) async {
-    // TODO: Implement scanner when mobile_scanner is added
-    // Example implementation:
-    /*
-    final result = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => MobileScannerScreen(
-          onDetect: (capture) {
-            final List<Barcode> barcodes = capture.barcodes;
-            for (final barcode in barcodes) {
-              if (barcode.rawValue != null) {
-                Navigator.of(context).pop();
-                onScanned(barcode.rawValue!);
-                break;
-              }
-            }
-          },
-        ),
-      ),
+    final result = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (context) => const BarcodeScannerScreen()),
     );
-    */
 
-    // Temporary: Show info dialog
-    if (!context.mounted) return;
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Skaner ISBN'),
-        content: const Text(
-          'Funkcja skanowania kodów kreskowych będzie dostępna w przyszłej wersji.\n\n'
-          'Na razie proszę użyć ręcznego wprowadzania numeru ISBN.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
+    if (result != null && result.isNotEmpty && context.mounted) {
+      onScanned(result);
+    }
   }
 
   @override
