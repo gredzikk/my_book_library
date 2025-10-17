@@ -51,7 +51,7 @@ Interfejs użytkownika będzie prosty, intuicyjny i skoncentrowany na kluczowych
 4.  **Ekran sesji czytania**: Pełnoekranowy widok z dużym stoperem, informacjami o książce i przyciskiem zakończenia, który otwiera dialog do wprowadzenia postępu.
 5.  **Ekrany uwierzytelniania**: Standardowe ekrany logowania i rejestracji. Użyj pakietu `flutter_auth_ui` z pub.dev
 6.  **Onboarding**: Sekwencja 3-4 ekranów (`PageView`) z wizualnym przewodnikiem po kluczowych funkcjach.
-
+7.  **Widok profilu użytkownika:** Ekran z widocznym adresem email użytkownika, ilością posiadanych książek - osiągalny z głównego ekranu przez ikonę obok tytułu strony.
 #### c. Strategia integracji z API i zarządzania stanem
 -   **Zarządzanie stanem**: Każdy widok odpowiedzialny za pobieranie danych będzie zarządzał swoim stanem (ładowanie, błąd, sukces). Do ładowania używane będą widżety "page skeleton".
 -   **Integracja z API**:

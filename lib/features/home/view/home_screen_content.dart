@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/bloc.dart';
 import '../widgets/widgets.dart';
 import '../../add_book/add_book.dart';
+import '../../profile/profile_screen.dart';
 
 /// Home Screen Content - main UI widget
 ///
@@ -16,7 +17,18 @@ class HomeScreenContent extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Moja Biblioteka'),
-        actions: const [FilterSortButton()],
+        actions: [
+          const FilterSortButton(),
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
+            tooltip: 'Profil',
+          ),
+        ],
       ),
       body: BlocConsumer<HomeScreenBloc, HomeScreenState>(
         listener: (context, state) {

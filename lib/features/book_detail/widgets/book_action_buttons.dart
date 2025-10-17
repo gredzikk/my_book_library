@@ -80,7 +80,7 @@ class BookActionButtons extends StatelessWidget {
         icon = Icons.auto_stories;
         break;
       case BookStatus.finished:
-        label = 'Przeczytaj ponownie';
+        label = 'Czytaj ponownie';
         icon = Icons.refresh;
         break;
       case BookStatus.abandoned:

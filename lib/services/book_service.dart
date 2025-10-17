@@ -531,16 +531,20 @@ class BookService {
       }
 
       // Execute update and check count
-      final response = await _supabase
-          .from('books')
-          .update(updateData)
-          .eq('id', id)
-          .select('id')
-          .timeout(ApiConstants.defaultTimeout) as List;
+      final response =
+          await _supabase
+                  .from('books')
+                  .update(updateData)
+                  .eq('id', id)
+                  .select('id')
+                  .timeout(ApiConstants.defaultTimeout)
+              as List;
 
       // Check if any rows were updated
       if (response.isEmpty) {
-        throw NotFoundException('Book not found or you don\'t have permission to update it');
+        throw NotFoundException(
+          'Book not found or you don\'t have permission to update it',
+        );
       }
 
       stopwatch.stop();
@@ -631,6 +635,84 @@ class BookService {
       stopwatch.stop();
       _logger.info(
         'Successfully deleted book in ${stopwatch.elapsedMilliseconds}ms',
+      );
+    } on PostgrestException catch (e) {
+      stopwatch.stop();
+      _logger.severe('Postgrest error: ${e.message} (code: ${e.code})', e);
+
+      if (e.code == 'PGRST301' || (e.message.toLowerCase().contains('jwt'))) {
+        throw UnauthorizedException(e.message);
+      } else if (e.code == 'PGRST116') {
+        throw NotFoundException('Book not found');
+      } else {
+        throw ServerException(e.message);
+      }
+    } on SocketException catch (e) {
+      stopwatch.stop();
+      _logger.warning('No internet connection: ${e.message}');
+      throw NoInternetException();
+    } on TimeoutException catch (e) {
+      stopwatch.stop();
+      _logger.warning('Request timeout: ${e.message}');
+      throw TimeoutException(
+        'Request timed out after ${ApiConstants.defaultTimeout.inSeconds}s',
+      );
+    } catch (e) {
+      stopwatch.stop();
+      _logger.severe('Unexpected error: $e', e);
+      throw ServerException('An unexpected error occurred');
+    }
+  }
+
+  // ==========================================================================
+  // Reset Book Progress (for re-reading)
+  // ==========================================================================
+
+  /// Resets a book's reading progress to start re-reading from the beginning
+  ///
+  /// Sets `last_read_page_number` to 0 and `status` to 'in_progress'.
+  /// This is used when a user wants to re-read a finished book.
+  ///
+  /// **Parameters:**
+  /// - [id]: UUID of the book to reset (required)
+  ///
+  /// **Throws:**
+  /// - [ValidationException]: Invalid book ID format
+  /// - [UnauthorizedException]: Authentication failed or token expired
+  /// - [NotFoundException]: Book not found or doesn't belong to user
+  /// - [ServerException]: Database error or Supabase service unavailable
+  /// - [NoInternetException]: No network connection
+  /// - [TimeoutException]: Request took too long
+  ///
+  /// **Example:**
+  /// ```dart
+  /// await bookService.resetBookProgress('c3e4b5a6-3b2a-4f1e-8b3d-2c1a1b0e9d8c');
+  /// ```
+  Future<void> resetBookProgress(String id) async {
+    _logger.info('Resetting book progress for re-reading: $id');
+
+    final stopwatch = Stopwatch()..start();
+
+    try {
+      // Validate book ID format
+      if (!_isValidUuid(id)) {
+        throw ValidationException('Invalid book ID format (must be UUID)');
+      }
+
+      // Execute update to reset progress
+      await _supabase
+          .from('books')
+          .update({
+            'last_read_page_number': 0,
+            'status': BookStatus.in_progress.name,
+            'updated_at': DateTime.now().toIso8601String(),
+          })
+          .eq('id', id)
+          .timeout(ApiConstants.defaultTimeout);
+
+      stopwatch.stop();
+      _logger.info(
+        'Successfully reset book progress in ${stopwatch.elapsedMilliseconds}ms',
       );
     } on PostgrestException catch (e) {
       stopwatch.stop();

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:my_book_library/services/reading_session_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'dart:developer' as dev;
 import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 // Import widgets and services
 import 'widgets/auth_gate.dart';
@@ -22,6 +24,9 @@ Future<void> main() async {
       time: record.time,
     );
   });
+
+  // Initialize date formatting for Polish locale
+  await initializeDateFormatting('pl_PL', null);
 
   // Load environment variables
   await dotenv.load(fileName: ".env");
@@ -49,6 +54,9 @@ class MyApp extends StatelessWidget {
           create: (context) => GenreService(Supabase.instance.client),
         ),
         RepositoryProvider(create: (context) => GoogleBooksService()),
+        RepositoryProvider<ReadingSessionService>(
+          create: (_) => ReadingSessionService(Supabase.instance.client),
+        ),
       ],
       child: MaterialApp(
         title: 'My Book Library',

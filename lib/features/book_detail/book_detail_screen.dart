@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../models/types.dart';
+import '../../models/database_types.dart';
 import '../../services/book_service.dart';
 import '../../services/reading_session_service.dart';
 import '../../services/genre_service.dart';
 import '../../services/google_books_api_service.dart';
 import '../add_book/view/book_form_screen.dart';
 import '../add_book/models/add_book_form_view_model.dart';
+import '../reading_session/reading_session.dart' as reading_session;
 import 'bloc/bloc.dart';
 import 'widgets/book_info_header.dart';
 import 'widgets/book_progress_indicator.dart';
@@ -237,16 +240,8 @@ class _BookDetailView extends StatelessWidget {
                         // Action buttons
                         BookActionButtons(
                           book: book,
-                          onStartSession: () {
-                            // TODO: Navigate to reading session screen
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Rozpoczęcie sesji - wkrótce dostępne',
-                                ),
-                              ),
-                            );
-                          },
+                          onStartSession: () =>
+                              _navigateToReadingSession(context, book),
                           onMarkAsRead: () {
                             context.read<BookDetailsBloc>().add(
                               const MarkAsReadRequested(),
@@ -344,6 +339,69 @@ class _BookDetailView extends StatelessWidget {
     );
 
     // If book was updated, refresh the details
+    if (result == true && context.mounted) {
+      context.read<BookDetailsBloc>().add(FetchBookDetails(book.id));
+    }
+  }
+
+  /// Navigates to the reading session screen
+  ///
+  /// If the book is finished (status == 'finished'), resets the progress to 0
+  /// before starting the session, allowing the user to re-read from the beginning.
+  Future<void> _navigateToReadingSession(
+    BuildContext context,
+    BookDetailDto book,
+  ) async {
+    BookDetailDto bookToUse = book;
+
+    // If book is finished, reset progress before starting session
+    if (book.status == BookStatus.finished) {
+      try {
+        // Show loading indicator
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Resetowanie postępu...'),
+              duration: Duration(seconds: 1),
+            ),
+          );
+        }
+
+        // Reset book progress to 0
+        final bookService = context.read<BookService>();
+        await bookService.resetBookProgress(book.id);
+
+        // Fetch updated book data from the service
+        if (context.mounted) {
+          final updatedBook = await bookService.getBook(book.id);
+          bookToUse = updatedBook;
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Błąd resetowania: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return; // Don't proceed to session if reset failed
+        }
+      }
+    }
+
+    // Capture navigator before async gap
+    if (!context.mounted) return;
+    final navigator = Navigator.of(context);
+
+    // Navigate to reading session screen with the correct book data
+    final result = await navigator.push<bool>(
+      MaterialPageRoute(
+        builder: (context) =>
+            reading_session.ReadingSessionScreen(book: bookToUse),
+      ),
+    );
+
+    // If session was completed successfully, refresh the book details
     if (result == true && context.mounted) {
       context.read<BookDetailsBloc>().add(FetchBookDetails(book.id));
     }
