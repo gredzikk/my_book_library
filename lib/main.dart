@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_book_library/config/app_theme.dart';
+import 'package:my_book_library/config/theme_cubit.dart';
 import 'package:my_book_library/services/reading_session_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -45,8 +47,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
+    return MultiBlocProvider(
       providers: [
+        // Services
         RepositoryProvider(
           create: (context) => BookService(Supabase.instance.client),
         ),
@@ -57,14 +60,20 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<ReadingSessionService>(
           create: (_) => ReadingSessionService(Supabase.instance.client),
         ),
+
+        // Theme Cubit
+        BlocProvider(create: (_) => ThemeCubit()),
       ],
-      child: MaterialApp(
-        title: 'My Book Library',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-          useMaterial3: true,
-        ),
-        home: const AuthGate(),
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, themeState) {
+          return MaterialApp(
+            title: 'My Book Library',
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: context.read<ThemeCubit>().themeMode,
+            home: const AuthGate(),
+          );
+        },
       ),
     );
   }

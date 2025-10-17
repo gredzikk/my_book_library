@@ -6,6 +6,8 @@ import '../../widgets/auth_gate.dart';
 import 'models/profile_view_model.dart';
 import 'widgets/user_info_card.dart';
 import 'widgets/book_stats_card.dart';
+import 'widgets/theme_toggle_card.dart';
+import 'widgets/app_version_card.dart';
 import 'widgets/logout_button.dart';
 
 /// Ekran profilu użytkownika
@@ -146,19 +148,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(title: const Text('Profil')),
       body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          SingleChildScrollView(
+            padding: EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              top: 16.0,
+              bottom: 16.0 + MediaQuery.of(context).padding.bottom,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // User info
                 UserInfoCard(viewModel: _viewModel),
                 const SizedBox(height: 16),
+
+                // Book stats
                 BookStatsCard(viewModel: _viewModel),
+                const SizedBox(height: 16),
+
+                // Theme toggle
+                const ThemeToggleCard(),
+                const SizedBox(height: 16),
+
+                // App version
+                const AppVersionCard(),
                 const SizedBox(height: 24),
+
+                // Logout button
                 LogoutButton(onLogout: _handleLogout),
               ],
             ),
           ),
+
           // Nakładka podczas wylogowywania
           if (_isLoggingOut)
             Container(
