@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/book_service.dart';
 import '../../widgets/auth_gate.dart';
+import '../auth/bloc/bloc.dart' as auth_bloc;
 import 'models/profile_view_model.dart';
 import 'widgets/user_info_card.dart';
 import 'widgets/book_stats_card.dart';
@@ -23,7 +24,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late ProfileViewModel _viewModel;
-  bool _isLoggingOut = false;
 
   @override
   void initState() {
@@ -86,35 +86,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   /// Obsługuje wylogowanie użytkownika
-  Future<void> _handleLogout() async {
-    setState(() {
-      _isLoggingOut = true;
-    });
-
-    try {
-      await Supabase.instance.client.auth.signOut();
-
-      // Przekieruj do ekranu uwierzytelnienia
-      if (mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const AuthGate()),
-          (route) => false,
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoggingOut = false;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Wylogowanie nie powiodło się. Spróbuj ponownie.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
+  void _handleLogout() {
+    // Dispatch sign out event to AuthBloc
+    context.read<auth_bloc.AuthBloc>().add(const auth_bloc.SignOutRequested());
   }
 
   @override
@@ -144,49 +118,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Profil')),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 16.0,
-              bottom: 16.0 + MediaQuery.of(context).padding.bottom,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+    return BlocListener<auth_bloc.AuthBloc, auth_bloc.AuthState>(
+      listener: (context, state) {
+        // Handle sign out success - navigate to AuthGate
+        if (state is auth_bloc.Unauthenticated) {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const AuthGate()),
+            (route) => false,
+          );
+        }
+        // Handle sign out error
+        else if (state is auth_bloc.AuthError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Profil')),
+        body: BlocBuilder<auth_bloc.AuthBloc, auth_bloc.AuthState>(
+          builder: (context, authState) {
+            final isLoggingOut = authState is auth_bloc.AuthLoading;
+
+            return Stack(
               children: [
-                // User info
-                UserInfoCard(viewModel: _viewModel),
-                const SizedBox(height: 16),
+                SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0,
+                    top: 16.0,
+                    bottom: 16.0 + MediaQuery.of(context).padding.bottom,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // User info
+                      UserInfoCard(viewModel: _viewModel),
+                      const SizedBox(height: 16),
 
-                // Book stats
-                BookStatsCard(viewModel: _viewModel),
-                const SizedBox(height: 16),
+                      // Book stats
+                      BookStatsCard(viewModel: _viewModel),
+                      const SizedBox(height: 16),
 
-                // Theme toggle
-                const ThemeToggleCard(),
-                const SizedBox(height: 16),
+                      // Theme toggle
+                      const ThemeToggleCard(),
+                      const SizedBox(height: 16),
 
-                // App version
-                const AppVersionCard(),
-                const SizedBox(height: 24),
+                      // App version
+                      const AppVersionCard(),
+                      const SizedBox(height: 24),
 
-                // Logout button
-                LogoutButton(onLogout: _handleLogout),
+                      // Logout button
+                      LogoutButton(onLogout: _handleLogout),
+                    ],
+                  ),
+                ),
+
+                // Nakładka podczas wylogowywania
+                if (isLoggingOut)
+                  Container(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
               ],
-            ),
-          ),
-
-          // Nakładka podczas wylogowywania
-          if (_isLoggingOut)
-            Container(
-              color: Colors.black.withValues(alpha: 0.5),
-              child: const Center(child: CircularProgressIndicator()),
-            ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }

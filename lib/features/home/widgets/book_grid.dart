@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/types.dart';
 import '../../book_detail/book_detail_screen.dart';
@@ -10,8 +11,9 @@ import 'book_grid_tile.dart';
 /// Creates a responsive grid layout with book tiles.
 class BookGrid extends StatelessWidget {
   final List<BookListItemDto> books;
+  final GlobalKey? firstBookKey;
 
-  const BookGrid({super.key, required this.books});
+  const BookGrid({super.key, required this.books, this.firstBookKey});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,8 @@ class BookGrid extends StatelessWidget {
       itemCount: books.length,
       itemBuilder: (context, index) {
         final book = books[index];
-        return BookGridTile(
+        final isFirstBook = index == 0;
+        final tile = BookGridTile(
           book: book,
           onTap: () async {
             // Navigate to book details and wait for result
@@ -42,6 +45,18 @@ class BookGrid extends StatelessWidget {
             }
           },
         );
+
+        if (isFirstBook && firstBookKey != null) {
+          return Showcase(
+            key: firstBookKey!,
+            title: 'Przegląd książki',
+            description:
+                'Tutaj możesz zobaczyć szczegóły książki. Stuknij, aby otworzyć widok szczegółów.',
+            child: tile,
+          );
+        }
+
+        return tile;
       },
     );
   }

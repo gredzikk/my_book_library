@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:showcaseview/showcaseview.dart';
 import '../bloc/bloc.dart';
 import '../widgets/widgets.dart';
 import '../../add_book/add_book.dart';
@@ -10,26 +11,63 @@ import '../../profile/profile_screen.dart';
 /// This widget builds the UI based on the current state of HomeScreenBloc.
 /// It displays different widgets for loading, empty, success, and error states.
 class HomeScreenContent extends StatelessWidget {
-  const HomeScreenContent({super.key});
+  /// GlobalKeys for onboarding tutorial showcase
+  final GlobalKey? appBarKey;
+  final GlobalKey? fabKey;
+  final GlobalKey? firstBookKey;
+  final bool showSkipButton;
+  final VoidCallback? onSkip;
+
+  const HomeScreenContent({
+    super.key,
+    this.appBarKey,
+    this.fabKey,
+    this.firstBookKey,
+    this.showSkipButton = false,
+    this.onSkip,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Moja Biblioteka'),
-        actions: [
-          const FilterSortButton(),
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const ProfileScreen()),
-              );
-            },
-            tooltip: 'Profil',
+    final appBar = AppBar(
+      title: const Text('Moja Biblioteka'),
+      actions: [
+        if (showSkipButton && onSkip != null)
+          TextButton(
+            onPressed: onSkip,
+            child: Text(
+              'Pomiń',
+              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+            ),
           ),
-        ],
-      ),
+        const FilterSortButton(),
+        IconButton(
+          icon: const Icon(Icons.person),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const ProfileScreen()),
+            );
+          },
+          tooltip: 'Profil',
+        ),
+      ],
+    );
+
+    // FloatingActionButton is built inline below (with optional showcase key)
+
+    return Scaffold(
+      appBar: appBarKey != null
+          ? PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight),
+              child: Showcase(
+                key: appBarKey!,
+                title: 'Twoja biblioteka',
+                description:
+                    'Tutaj znajdują się wszystkie Twoje książki. Możesz je filtrować i sortować używając przycisków w górnym menu.',
+                child: appBar,
+              ),
+            )
+          : appBar as PreferredSizeWidget,
       body: BlocConsumer<HomeScreenBloc, HomeScreenState>(
         listener: (context, state) {
           // Show error messages in SnackBar
@@ -69,7 +107,7 @@ class HomeScreenContent extends StatelessWidget {
                   (s) => s is! HomeScreenLoading,
                 );
               },
-              child: BookGrid(books: state.books),
+              child: BookGrid(books: state.books, firstBookKey: firstBookKey),
             );
           }
 
@@ -77,20 +115,38 @@ class HomeScreenContent extends StatelessWidget {
           return const Center(child: Text('Wystąpił błąd. Spróbuj ponownie.'));
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // Navigate to add book screen and wait for result
-          final result = await Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const AddBookScreen()),
-          );
-
-          // Refresh the list if a book was added/modified
-          if (result == true && context.mounted) {
-            context.read<HomeScreenBloc>().add(const RefreshBooksEvent());
-          }
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: _buildFloatingActionButton(context),
     );
+  }
+
+  /// Builds the FloatingActionButton with optional Showcase wrapper
+  Widget _buildFloatingActionButton(BuildContext context) {
+    final fab = FloatingActionButton(
+      onPressed: () async {
+        // Navigate to add book screen and wait for result
+        final result = await Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => const AddBookScreen()));
+
+        // Refresh the list if a book was added/modified
+        if (result == true && context.mounted) {
+          context.read<HomeScreenBloc>().add(const RefreshBooksEvent());
+        }
+      },
+      child: const Icon(Icons.add),
+    );
+
+    // Wrap in Showcase if fabKey is provided
+    if (fabKey != null) {
+      return Showcase(
+        key: fabKey!,
+        title: 'Dodaj książkę',
+        description:
+            'Kliknij tutaj, aby dodać nową książkę do swojej biblioteki. Możesz ją wprowadzić ręcznie lub zeskanować kod kreskowy.',
+        child: fab,
+      );
+    }
+
+    return fab;
   }
 }

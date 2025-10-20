@@ -1,0 +1,232 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Supabase Auth Integration with Flutter
+
+Use this guide to introduce authentication (sign-up & sign-in) in Flutter applications.
+
+## Before we start
+
+VERY IMPORTANT: Ask me which screens or widgets should behave differently after introducing authentication. Adjust further steps accordingly.
+
+## Core Requirements
+
+1. Use `supabase_flutter` package for Flutter integration.
+2. Initialize Supabase in `main.dart` before running the app.
+3. Use `Supabase.instance.client` to access the Supabase client singleton.
+4. Implement proper session management and redirection based on auth state changes.
+
+## Installation
+
+Add `supabase_flutter` to your dependencies in `pubspec.yaml`:
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  supabase_flutter: ^2.0.0 # Check for the latest version
+```
+
+Then, run `flutter pub get`.
+
+## Environment Variables & Initialization
+
+Create a configuration file for your Supabase credentials, for example `lib/config/supabase_config.dart`:
+
+```dart
+// lib/config/supabase_config.dart
+class SupabaseConfig {
+  static const String supabaseUrl = 'YOUR_SUPABASE_URL';
+  static const String supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
+}
+```
+**IMPORTANT**: Add this file to your `.gitignore` to avoid committing credentials to version control.
+
+Initialize the Supabase client in your `main.dart` file before `runApp()`:
+
+```dart
+// lib/main.dart
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'config/supabase_config.dart'; // Import your config
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: SupabaseConfig.supabaseUrl,
+    anonKey: SupabaseConfig.supabaseAnonKey,
+  );
+  runApp(MyApp());
+}
+
+// Helper to access the client
+final supabase = Supabase.instance.client;
+```
+
+## Implementation Steps
+
+### 1. Create an Authentication Service
+
+Create a service class to handle authentication logic in `lib/services/auth_service.dart`:
+
+```dart
+// lib/services/auth_service.dart
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class AuthService {
+  final GoTrueClient _auth = Supabase.instance.client.auth;
+
+  Stream<AuthState> get authStateChanges => _auth.onAuthStateChange;
+
+  User? get currentUser => _auth.currentUser;
+
+  Future<void> signUp(String email, String password) async {
+    try {
+      await _auth.signUp(email: email, password: password);
+    } on AuthException catch (e) {
+      // Handle error
+      print(e.message);
+      rethrow;
+    }
+  }
+
+  Future<void> signIn(String email, String password) async {
+    try {
+      await _auth.signInWithPassword(email: email, password: password);
+    } on AuthException catch (e) {
+      // Handle error
+      print(e.message);
+      rethrow;
+    }
+  }
+
+  Future<void> signOut() async {
+    try {
+      await _auth.signOut();
+    } on AuthException catch (e) {
+      // Handle error
+      print(e.message);
+      rethrow;
+    }
+  }
+}
+```
+
+### 2. Implement Auth State Listener and Redirection
+
+In your main app widget, listen to authentication state changes to redirect users.
+
+```dart
+// lib/main.dart
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'My Book Library',
+      home: StreamBuilder<AuthState>(
+        stream: Supabase.instance.client.auth.onAuthStateChange,
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.data?.session != null) {
+            // User is logged in
+            return HomeScreen(); // Or your main app screen
+          }
+          // User is not logged in
+          return LoginScreen();
+        },
+      ),
+    );
+  }
+}
+```
+
+### 3. Create Auth Screens (Widgets)
+
+Create your UI for login, registration, etc. in the `lib/screens/` directory.
+
+```dart
+// lib/screens/login_screen.dart
+import 'package:flutter/material.dart';
+import 'package/my_book_library/services/auth_service.dart';
+
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _authService = AuthService();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Login')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+            ),
+            TextField(
+              controller: _passwordController,
+              decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await _authService.signIn(
+                    _emailController.text,
+                    _passwordController.text,
+                  );
+                  // Navigation is handled by the StreamBuilder in main.dart
+                } catch (e) {
+                  // Show error to the user
+                }
+              },
+              child: Text('Sign In'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+Implement `SignUpScreen` and other screens similarly.
+
+### 4. Protect Routes/Widgets
+
+Route protection is handled by the `StreamBuilder` in `main.dart`. To access user data in protected widgets:
+
+```dart
+// In a protected screen/widget
+final user = Supabase.instance.client.auth.currentUser;
+
+if (user != null) {
+  // Use user.id, user.email, etc.
+  Text('Welcome ${user.email}');
+}
+```
+
+## Security Best Practices
+
+- Use Row Level Security (RLS) in your Supabase database to protect data.
+- Never expose Supabase admin keys in the Flutter app.
+- Validate all user input.
+- Handle errors gracefully and provide clear feedback to the user.
+
+## Common Pitfalls
+
+1. Forgetting to initialize Supabase with `Supabase.initialize()` in `main.dart`.
+2. Not handling `AuthException`s during sign-in, sign-up, or sign-out.
+3. Trying to access `currentUser` before the auth state is restored. Use the `onAuthStateChange` stream or check `session != null` to know when the user is authenticated.
+4. Storing credentials in version control. Always use `.gitignore` for config files with secrets.
+5. Not enabling RLS on your Supabase tables, leaving data exposed.

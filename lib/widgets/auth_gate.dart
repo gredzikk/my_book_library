@@ -1,39 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../features/auth/bloc/bloc.dart';
 import '../screens/authentication_screen.dart';
-import '../features/home/view/home_screen_view.dart';
+import '../features/onboarding/onboarding.dart';
 
 /// AuthGate - strażnik autoryzacji aplikacji
 ///
-/// Komponent nasłuchuje na zmiany stanu uwierzytelnienia i wyświetla:
+/// Komponent nasłuchuje na zmiany stanu uwierzytelnienia poprzez AuthBloc i wyświetla:
 /// - AuthenticationScreen gdy użytkownik nie jest zalogowany
-/// - HomeScreen gdy użytkownik jest zalogowany
-class AuthGate extends StatefulWidget {
+/// - OnboardingWrapper (wrapping HomeScreen) gdy użytkownik jest zalogowany
+class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
   @override
-  State<AuthGate> createState() => _AuthGateState();
-}
-
-class _AuthGateState extends State<AuthGate> {
-  @override
   Widget build(BuildContext context) {
-    return StreamBuilder<AuthState>(
-      stream: Supabase.instance.client.auth.onAuthStateChange,
-      builder: (context, snapshot) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
         // Podczas inicjalizacji pokazujemy wskaźnik ładowania
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (state is AuthInitial || state is AuthLoading) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
         // Sprawdzamy czy użytkownik jest zalogowany
-        final session = snapshot.hasData ? snapshot.data!.session : null;
-
-        if (session != null) {
-          // Użytkownik jest zalogowany - przekieruj do HomeScreen
-          return const HomeScreenView();
+        if (state is Authenticated) {
+          // Użytkownik jest zalogowany - przekieruj do HomeScreen z onboardingiem
+          return const OnboardingWrapper();
         } else {
           // Użytkownik nie jest zalogowany - pokaż ekran uwierzytelnienia
           return const AuthenticationScreen();

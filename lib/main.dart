@@ -6,7 +6,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'dart:developer' as dev;
-import 'package:supabase_auth_ui/supabase_auth_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -15,6 +14,9 @@ import 'widgets/auth_gate.dart';
 import 'services/book_service.dart';
 import 'services/genre_service.dart';
 import 'services/google_books_api_service.dart';
+import 'features/auth/services/auth_service.dart';
+import 'features/auth/bloc/bloc.dart';
+import 'features/onboarding/onboarding.dart';
 
 Future<void> main() async {
   // Configure logging
@@ -60,9 +62,24 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<ReadingSessionService>(
           create: (_) => ReadingSessionService(Supabase.instance.client),
         ),
+        RepositoryProvider<AuthService>(
+          create: (_) => AuthService(Supabase.instance.client),
+        ),
+        RepositoryProvider<OnboardingService>(
+          create: (_) => OnboardingService(),
+        ),
 
-        // Theme Cubit
+        // BLoCs and Cubits
         BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(
+          create: (context) =>
+              AuthBloc(authService: context.read<AuthService>()),
+        ),
+        BlocProvider(
+          create: (context) => OnboardingCubit(
+            onboardingService: context.read<OnboardingService>(),
+          ),
+        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, themeState) {

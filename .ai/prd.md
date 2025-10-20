@@ -70,7 +70,7 @@ My Book Library adresuje te problemy, oferując intuicyjną platformę do katalo
 - Tytuł: Rejestracja nowego użytkownika
 - Opis: Jako nowy użytkownik, chcę móc założyć konto w aplikacji przy użyciu adresu e-mail i hasła, aby móc zacząć budować swoją bibliotekę.
 - Kryteria akceptacji:
-  - Formularz rejestracji zawiera pola na adres e-mail i hasło.
+  - Formularz rejestracji zawiera pola na adres e-mail, hasło oraz potwierdzenie hasła.
   - Walidacja sprawdza poprawność formatu adresu e-mail.
   - Wymagania co do siły hasła są jasno określone i walidowane.
   - Po pomyślnej rejestracji użytkownik jest automatycznie zalogowany i przekierowany do ekranu onboardingu.
@@ -203,6 +203,30 @@ My Book Library adresuje te problemy, oferując intuicyjną platformę do katalo
   - Jeśli sesja jest aktywna, a aplikacja działa w tle przez ponad godzinę, system wysyła powiadomienie push.
   - Kliknięcie w powiadomienie przenosi użytkownika z powrotem do ekranu aktywnej sesji.
   - Odrzucenie powiadomienia nie przerywa sesji; stoper nadal działa w tle.
+
+### Bezpieczeństwo
+
+- ID: US-017
+- Tytuł: Odzyskiwanie dostępu do konta
+- Opis: Jako zarejestrowany użytkownik, chcę mieć możliwość odzyskania dostępu do konta w przypadku gdy zapomnę hasła dostępu.
+- Kryteria akceptacji:
+  - Na ekranie początkowym, użytkownik ma możliwość kliknąć przycisk "Zapomniałem hasła".
+  - Po podaniu emaila przypisanego do zarejestrowanego konta, system wysyła link resetowania hasła.
+  - Po kliknięciu w linka, hasło zostaje zresetowane i użytkownik ma możliwość ustawienia nowego poprzez podanie hasła i potwierdzenie.
+  - Link ma ważność 10 minut - po tym czasie kliknięcie w link nie resetuje hasła i zwraca komunikat o nieważności.
+
+- ID: US-018
+- Tytuł: Bezpieczny dostęp 
+- Opis: Jako użytkownik chcę mieć możliwość rejestracji i logowania się do systemu w sposób zapewniający bezpieczeństwo moich danych.
+- Kryteria akceptacji:
+  - Logowanie i rejestracja odbywają się na dedykowanych stronach.
+  - Logowanie wymaga podania adresu email i hasła.
+  - Rejestracja wymaga podania adresu email, hasła i potwierdzenia hasła.
+  - Użytkownik NIE MOŻE korzystać z funkcji aplikacji bez logowania się do systemu (US-002).
+  - Użytkownik może logować się do systemu poprzez przycisk na ekranie początkowym aplikacji.
+  - Użytkownik może się wylogować z systemu poprzez przycisk na ekranie profilu.
+  - Nie korzystamy z zewnętrznych serwisów logowania (np. Google, GitHub).
+  - Odzyskiwanie hasła powinno być możliwe.
 
 ## 6. Metryki sukcesu
 ### Kluczowe wskaźniki wydajności (KPI)
