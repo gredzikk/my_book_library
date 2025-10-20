@@ -33,7 +33,9 @@ Future<void> main() async {
   await initializeDateFormatting('pl_PL', null);
 
   // Load environment variables
-  await dotenv.load(fileName: ".env");
+  //.env.dev for test db instance
+  //.env.prod for production
+  await dotenv.load(fileName: ".env.dev");
   String supabaseUrl = dotenv.env['SUPABASE_URL']!;
   String supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY']!;
 
