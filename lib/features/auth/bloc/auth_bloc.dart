@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
-import '../services/auth_service.dart';
+import '../../../services/auth_service.dart';
 import '../../../core/exceptions.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';

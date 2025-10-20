@@ -22,20 +22,28 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   /// or [OnboardingState.completed] if it has already been shown.
   Future<void> checkOnboardingStatus() async {
     try {
-      _logger.info('Checking onboarding status...');
+      _logger.info(
+        'Checking onboarding status... (current state: ${state.runtimeType})',
+      );
       final hasBeenShown = await _onboardingService.getOnboardingStatus();
 
       if (hasBeenShown) {
-        _logger.info('Onboarding has been completed previously');
+        _logger.info(
+          'Onboarding has been completed previously - emitting completed state',
+        );
         emit(const OnboardingState.completed());
+        _logger.info('State emitted: ${state.runtimeType}');
       } else {
-        _logger.info('Onboarding needs to be shown');
+        _logger.info('Onboarding needs to be shown - emitting show state');
         emit(const OnboardingState.show());
+        _logger.info('State emitted: ${state.runtimeType}');
       }
     } catch (e, stackTrace) {
       _logger.severe('Error checking onboarding status', e, stackTrace);
       // On error, default to showing onboarding (safer for new users)
+      _logger.info('Error occurred - emitting show state as fallback');
       emit(const OnboardingState.show());
+      _logger.info('State emitted: ${state.runtimeType}');
     }
   }
 

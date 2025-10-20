@@ -13,7 +13,7 @@ library;
 import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:logging/logging.dart';
-import '../../../core/exceptions.dart';
+import '../core/exceptions.dart';
 
 // ============================================================================
 // Abstract Interface

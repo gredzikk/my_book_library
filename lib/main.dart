@@ -14,7 +14,7 @@ import 'widgets/auth_gate.dart';
 import 'services/book_service.dart';
 import 'services/genre_service.dart';
 import 'services/google_books_api_service.dart';
-import 'features/auth/services/auth_service.dart';
+import 'services/auth_service.dart';
 import 'features/auth/bloc/bloc.dart';
 import 'features/onboarding/onboarding.dart';
 
