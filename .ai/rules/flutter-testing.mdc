@@ -1,0 +1,5 @@
+- **Adopt test-driven development (TDD):** TDD involves writing tests before writing the code itself. It's a powerful approach that ensures every piece of code you write is testable and tested. It encourages simpler designs and inspires confidence.
+- **Use meaningful test names:** A test name should clearly state what functionality or behavior it's testing. Clear test names make it easier to understand what's being tested and to debug issues when a test fails.
+- **Test all possible cases:** strive to test all possible edge cases and scenarios, not just the 'happy path'. For instance, test how your app behaves with no internet connection or when an API call fails.
+- **Maintain a testing pyramid:** your testing strategy should resemble a pyramid: a large base of unit tests (since they are quick to write and run), a smaller number of widget tests, and an even smaller number of integration tests (since they are complex and slow to run).
+- **Refactor and maintain your tests:** just like your app's code, your tests require maintenance. Remove obsolete tests, refactor complex ones, and update tests to reflect changes in your app.
