@@ -47,6 +47,12 @@ void main() {
     Future<void> registerAndLoginTestUser(WidgetTester tester) async {
       final supabase = Supabase.instance.client;
       testDataHelper = TestDataHelper(supabase);
+
+      // Clear any existing session (important for test isolation)
+      TestReporter.logStep('Clearing any existing user session');
+      await supabase.auth.signOut();
+      await tester.pumpAndSettle(const Duration(seconds: 2));
+
       final testEmail = testDataHelper.generateTestEmail();
       final testPassword = testDataHelper.generateTestPassword();
 
@@ -63,8 +69,21 @@ void main() {
       await tester.enterText(find.byType(TextField).at(2), testPassword);
       await tester.pumpAndSettle();
 
-      // Submit
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Zarejestruj się'));
+      // Submit registration
+      await tester.tap(find.widgetWithText(FilledButton, 'Zarejestruj się'));
+      await tester.pumpAndSettle(const Duration(seconds: 5));
+
+      // After registration, user is redirected to login screen
+      // Now we need to log in
+      TestReporter.logStep('Logging in with registered user: $testEmail');
+
+      // Fill login form
+      await tester.enterText(find.byType(TextField).first, testEmail);
+      await tester.enterText(find.byType(TextField).at(1), testPassword);
+      await tester.pumpAndSettle();
+
+      // Submit login
+      await tester.tap(find.widgetWithText(FilledButton, 'Zaloguj się'));
       await tester.pumpAndSettle(const Duration(seconds: 5));
 
       testUserId = supabase.auth.currentUser?.id;
@@ -92,10 +111,14 @@ void main() {
           await tester.pumpAndSettle(const Duration(seconds: 2));
           await registerAndLoginTestUser(tester);
 
+          // Wait for home screen to fully load
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+
           // WHEN: User opens add book screen
           TestReporter.logStep('Opening add book screen');
           final addButton = find.byIcon(Icons.add);
-          await tester.tap(addButton);
+          expect(addButton, findsAtLeastNWidgets(1));
+          await tester.tap(addButton.first);
           await tester.pumpAndSettle(const Duration(seconds: 2));
 
           // AND: Enters ISBN and fetches book data
@@ -120,7 +143,7 @@ void main() {
 
           // Save the book
           TestReporter.logStep('Saving book');
-          final saveButton = find.widgetWithText(ElevatedButton, 'Zapisz');
+          final saveButton = find.widgetWithText(FilledButton, 'Dodaj książkę');
           await tester.tap(saveButton);
           await tester.pumpAndSettle(const Duration(seconds: 3));
 
@@ -167,10 +190,13 @@ void main() {
           await tester.pumpAndSettle(const Duration(seconds: 2));
           await registerAndLoginTestUser(tester);
 
+          // Wait for home screen to fully load
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+
           // WHEN: User opens add book screen
           TestReporter.logStep('Opening add book screen');
           final addButton = find.byIcon(Icons.add);
-          await tester.tap(addButton);
+          await tester.tap(addButton.first);
           await tester.pumpAndSettle(const Duration(seconds: 2));
 
           // AND: Fills form manually
@@ -193,7 +219,7 @@ void main() {
 
           // Save
           TestReporter.logStep('Saving manually added book');
-          final saveButton = find.widgetWithText(ElevatedButton, 'Zapisz');
+          final saveButton = find.widgetWithText(FilledButton, 'Dodaj książkę');
           await tester.tap(saveButton);
           await tester.pumpAndSettle(const Duration(seconds: 3));
 
@@ -239,10 +265,13 @@ void main() {
           await tester.pumpAndSettle(const Duration(seconds: 2));
           await registerAndLoginTestUser(tester);
 
+          // Wait for home screen to fully load
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+
           // Create a book first
           TestReporter.logStep('Adding a book to delete');
           final addButton = find.byIcon(Icons.add);
-          await tester.tap(addButton);
+          await tester.tap(addButton.first);
           await tester.pumpAndSettle(const Duration(seconds: 2));
 
           await tester.enterText(
@@ -253,7 +282,7 @@ void main() {
           await tester.enterText(find.byType(TextField).at(2), '100');
           await tester.pumpAndSettle();
 
-          await tester.tap(find.widgetWithText(ElevatedButton, 'Zapisz'));
+          await tester.tap(find.widgetWithText(FilledButton, 'Dodaj książkę'));
           await tester.pumpAndSettle(const Duration(seconds: 3));
 
           expect(find.text('Book To Delete'), findsOneWidget);
@@ -327,10 +356,13 @@ void main() {
           await tester.pumpAndSettle(const Duration(seconds: 2));
           await registerAndLoginTestUser(tester);
 
+          // Wait for home screen to fully load
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+
           // Create a book first
           TestReporter.logStep('Adding a book to edit');
           final addButton = find.byIcon(Icons.add);
-          await tester.tap(addButton);
+          await tester.tap(addButton.first);
           await tester.pumpAndSettle(const Duration(seconds: 2));
 
           await tester.enterText(
@@ -344,7 +376,7 @@ void main() {
           await tester.enterText(find.byType(TextField).at(2), '200');
           await tester.pumpAndSettle();
 
-          await tester.tap(find.widgetWithText(ElevatedButton, 'Zapisz'));
+          await tester.tap(find.widgetWithText(FilledButton, 'Dodaj książkę'));
           await tester.pumpAndSettle(const Duration(seconds: 3));
 
           // WHEN: User opens book for editing
@@ -364,7 +396,7 @@ void main() {
           await tester.pumpAndSettle();
 
           // Save changes
-          final saveButton = find.widgetWithText(ElevatedButton, 'Zapisz');
+          final saveButton = find.widgetWithText(FilledButton, 'Zapisz zmiany');
           await tester.tap(saveButton);
           await tester.pumpAndSettle(const Duration(seconds: 3));
 

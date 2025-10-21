@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return BlocConsumer<AuthBloc, AuthState>(
+    return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         // Debug logging
         print('🔍 LoginScreen - State changed to: ${state.runtimeType}');
@@ -128,154 +128,162 @@ class _LoginScreenState extends State<LoginScreen> {
         }
         // Navigation is handled by AuthGate via BlocBuilder
       },
-      builder: (context, state) {
-        final isLoading = state is AuthLoading;
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          final isLoading = state is AuthLoading;
 
-        return Scaffold(
-          appBar: AppBar(title: const Text('Logowanie'), centerTitle: true),
-          body: SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // App icon/logo
-                      Icon(
-                        Icons.library_books,
-                        size: 80,
-                        color: colorScheme.primary,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Welcome text
-                      Text(
-                        'Witaj ponownie!',
-                        style: theme.textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+          return Scaffold(
+            appBar: AppBar(title: const Text('Logowanie'), centerTitle: true),
+            body: SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // App icon/logo
+                        Icon(
+                          Icons.library_books,
+                          size: 80,
+                          color: colorScheme.primary,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Zaloguj się do swojego konta',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 48),
+                        const SizedBox(height: 16),
 
-                      // Email field
-                      AuthTextField(
-                        controller: _emailController,
-                        label: 'Adres e-mail',
-                        hintText: 'twoj@email.com',
-                        keyboardType: TextInputType.emailAddress,
-                        validator: _validateEmail,
-                        enabled: !isLoading,
-                        prefixIcon: const Icon(Icons.email_outlined),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Password field
-                      PasswordField(
-                        controller: _passwordController,
-                        label: 'Hasło',
-                        validator: _validatePassword,
-                        enabled: !isLoading,
-                      ),
-                      const SizedBox(height: 8),
-
-                      // Forgot password link
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: isLoading
-                              ? null
-                              : () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ForgotPasswordScreen(),
-                                    ),
-                                  );
-                                },
-                          child: const Text('Zapomniałeś hasła?'),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Login button
-                      FilledButton(
-                        onPressed: isLoading ? null : _handleLogin,
-                        style: FilledButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 48),
-                        ),
-                        child: isLoading
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Text('Zaloguj się'),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Divider
-                      Row(
-                        children: [
-                          Expanded(child: Divider(color: colorScheme.outline)),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Text(
-                              'lub',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
+                        // Welcome text
+                        Text(
+                          'Witaj ponownie!',
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
                           ),
-                          Expanded(child: Divider(color: colorScheme.outline)),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Register link
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Nie masz konta? ',
-                            style: theme.textTheme.bodyMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Zaloguj się do swojego konta',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
                           ),
-                          TextButton(
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 48),
+
+                        // Email field
+                        AuthTextField(
+                          controller: _emailController,
+                          label: 'Adres e-mail',
+                          hintText: 'twoj@email.com',
+                          keyboardType: TextInputType.emailAddress,
+                          validator: _validateEmail,
+                          enabled: !isLoading,
+                          prefixIcon: const Icon(Icons.email_outlined),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Password field
+                        PasswordField(
+                          controller: _passwordController,
+                          label: 'Hasło',
+                          validator: _validatePassword,
+                          enabled: !isLoading,
+                        ),
+                        const SizedBox(height: 8),
+
+                        // Forgot password link
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
                             onPressed: isLoading
                                 ? null
                                 : () {
-                                    Navigator.of(context).pushReplacement(
+                                    Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            const RegisterScreen(),
+                                            const ForgotPasswordScreen(),
                                       ),
                                     );
                                   },
-                            child: const Text('Zarejestruj się'),
+                            child: const Text('Zapomniałeś hasła?'),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Login button
+                        FilledButton(
+                          onPressed: isLoading ? null : _handleLogin,
+                          style: FilledButton.styleFrom(
+                            minimumSize: const Size(double.infinity, 48),
+                          ),
+                          child: isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text('Zaloguj się'),
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Divider
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Divider(color: colorScheme.outline),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: Text(
+                                'lub',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Divider(color: colorScheme.outline),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Register link
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Nie masz konta? ',
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                            TextButton(
+                              onPressed: isLoading
+                                  ? null
+                                  : () {
+                                      Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const RegisterScreen(),
+                                        ),
+                                      );
+                                    },
+                              child: const Text('Zarejestruj się'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

@@ -16,7 +16,6 @@ import 'services/genre_service.dart';
 import 'services/google_books_api_service.dart';
 import 'services/auth_service.dart';
 import 'features/auth/bloc/bloc.dart';
-import 'features/onboarding/onboarding.dart';
 
 Future<void> main() async {
   // Configure logging
@@ -35,9 +34,9 @@ Future<void> main() async {
   // Load environment variables
   //.env.dev for test db instance
   //.env.prod for production
-  await dotenv.load(fileName: ".env.dev");
-  String supabaseUrl = dotenv.env['SUPABASE_URL']!;
-  String supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY']!;
+  await dotenv.load(fileName: ".env");
+  String supabaseUrl = dotenv.env['SUPABASE_TEST_URL']!;
+  String supabaseAnonKey = dotenv.env['SUPABASE_TEST_ANON_KEY']!;
 
   // Initialize Supabase
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
@@ -67,9 +66,6 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<AuthService>(
           create: (_) => AuthService(Supabase.instance.client),
         ),
-        RepositoryProvider<OnboardingService>(
-          create: (_) => OnboardingService(),
-        ),
 
         // BLoCs and Cubits
         BlocProvider(create: (_) => ThemeCubit()),
@@ -77,14 +73,12 @@ class MyApp extends StatelessWidget {
           create: (context) =>
               AuthBloc(authService: context.read<AuthService>()),
         ),
-        BlocProvider(
-          create: (context) => OnboardingCubit(
-            onboardingService: context.read<OnboardingService>(),
-          ),
-        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, themeState) {
+          print(
+            '📱 MaterialApp - Rebuilding with theme: ${themeState.runtimeType}',
+          );
           return MaterialApp(
             title: 'My Book Library',
             theme: AppTheme.lightTheme,

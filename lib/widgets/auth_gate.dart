@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_book_library/features/home/view/home_screen_view.dart';
 import '../features/auth/bloc/bloc.dart';
 import '../screens/authentication_screen.dart';
-import '../features/onboarding/onboarding.dart';
 
 /// AuthGate - strażnik autoryzacji aplikacji
 ///
@@ -14,21 +14,27 @@ class AuthGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('🚪 AuthGate - build() method called');
     return BlocBuilder<AuthBloc, AuthState>(
       buildWhen: (previous, current) {
         // Always rebuild to ensure UI stays in sync
         // Log state transitions
         print(
-          '🚪 AuthGate - State transition: ${previous.runtimeType} -> ${current.runtimeType}',
+          '🚪 AuthGate - buildWhen called: ${previous.runtimeType} -> ${current.runtimeType}',
         );
         return true;
       },
       builder: (context, state) {
         // Debug logging
-        print('🚪 AuthGate - Building with state: ${state.runtimeType}');
+        print('🚪 AuthGate - builder called with state: ${state.runtimeType}');
+
+        if (state is Authenticated) {
+          print('🚪 AuthGate - User authenticated: ${state.user.id}');
+        }
 
         // Podczas inicjalizacji pokazujemy wskaźnik ładowania
         if (state is AuthInitial) {
+          print('🚪 AuthGate - Showing loading indicator (AuthInitial)');
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
@@ -36,12 +42,16 @@ class AuthGate extends StatelessWidget {
 
         // Sprawdzamy czy użytkownik jest zalogowany
         if (state is Authenticated) {
-          // Użytkownik jest zalogowany - przekieruj do HomeScreen z onboardingiem
-          print('🚪 AuthGate - Navigating to OnboardingWrapper');
-          return const OnboardingWrapper();
+          // Użytkownik jest zalogowany - przekieruj do HomeScreen
+          print(
+            '🚪 AuthGate - Rendering HomeScreenView for authenticated user',
+          );
+          return const HomeScreenView();
         } else {
           // Użytkownik nie jest zalogowany - pokaż ekran uwierzytelnienia
-          print('🚪 AuthGate - Showing AuthenticationScreen');
+          print(
+            '🚪 AuthGate - Rendering AuthenticationScreen for ${state.runtimeType}',
+          );
           return const AuthenticationScreen();
         }
       },

@@ -56,7 +56,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthBloc, AuthState>(
+    return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         // Show error messages
         if (state is AuthError) {
@@ -68,27 +68,29 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           );
         }
       },
-      builder: (context, state) {
-        final isLoading = state is AuthLoading;
-        final emailSent = state is PasswordResetEmailSent;
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          final isLoading = state is AuthLoading;
+          final emailSent = state is PasswordResetEmailSent;
 
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Resetowanie hasła'),
-            centerTitle: true,
-          ),
-          body: SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24.0),
-                child: emailSent
-                    ? _buildSuccessView(context, state)
-                    : _buildForm(context, isLoading),
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Resetowanie hasła'),
+              centerTitle: true,
+            ),
+            body: SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24.0),
+                  child: emailSent
+                      ? _buildSuccessView(context, state)
+                      : _buildForm(context, isLoading),
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

@@ -173,9 +173,7 @@ W repozytorium GitHub:
 flutter pub get
 
 # Uruchom prosty test połączenia
-flutter test integration_test/smoke/critical_path_test.dart \
-  --dart-define=SUPABASE_TEST_URL=$SUPABASE_TEST_URL \
-  --dart-define=SUPABASE_TEST_ANON_KEY=$SUPABASE_TEST_ANON_KEY
+flutter test integration_test/smoke/critical_path_test.dart --dart-define=SUPABASE_TEST_URL=$SUPABASE_TEST_URL \ --dart-define=SUPABASE_TEST_ANON_KEY=$SUPABASE_TEST_ANON_KEY
 ```
 
 ### Test 2: Sprawdź RLS Policies

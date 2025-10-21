@@ -67,6 +67,12 @@ void main() {
           // Initialize test data helper
           final supabase = Supabase.instance.client;
           testDataHelper = TestDataHelper(supabase);
+
+          // Clear any existing session (important for test isolation)
+          TestReporter.logStep('Clearing any existing user session');
+          await supabase.auth.signOut();
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+
           final testEmail = testDataHelper.generateTestEmail();
           final testPassword = testDataHelper.generateTestPassword();
 
@@ -106,7 +112,7 @@ void main() {
 
           TestReporter.logStep('Submitting registration');
           final submitButton = find.widgetWithText(
-            ElevatedButton,
+            FilledButton,
             'Zarejestruj się',
           );
           await tester.tap(submitButton);
@@ -128,21 +134,16 @@ void main() {
 
           TestReporter.logAssertion('User registered with ID: $testUserId');
 
-          // Skip onboarding if present
-          final skipButton = find.text('Pomiń');
-          if (skipButton.evaluate().isNotEmpty) {
-            TestReporter.logStep('Skipping onboarding');
-            await tester.tap(skipButton);
-            await tester.pumpAndSettle(const Duration(seconds: 2));
-          }
+          // Wait for home screen to fully load
+          await tester.pumpAndSettle(const Duration(seconds: 2));
 
           // ==========================================
           // WHEN: User adds a book manually
           // ==========================================
           TestReporter.logStep('Adding a new book');
 
-          // Find and tap the add book button (FAB or app bar action)
-          final addButton = find.byIcon(Icons.add);
+          // Find and tap the add book button (FAB)
+          final addButton = find.byType(FloatingActionButton);
           expect(addButton, findsOneWidget);
           await tester.tap(addButton);
           await tester.pumpAndSettle(const Duration(seconds: 2));
@@ -166,7 +167,10 @@ void main() {
 
           // Save book
           TestReporter.logStep('Saving book');
-          final saveBookButton = find.widgetWithText(ElevatedButton, 'Zapisz');
+          final saveBookButton = find.widgetWithText(
+            FilledButton,
+            'Dodaj książkę',
+          );
           await tester.tap(saveBookButton);
           await tester.pumpAndSettle(const Duration(seconds: 3));
 
@@ -214,7 +218,7 @@ void main() {
           await tester.enterText(lastPageField, '50');
           await tester.pumpAndSettle();
 
-          final confirmButton = find.text('Potwierdź');
+          final confirmButton = find.widgetWithText(FilledButton, 'Zapisz');
           await tester.tap(confirmButton);
           await tester.pumpAndSettle(const Duration(seconds: 3));
 

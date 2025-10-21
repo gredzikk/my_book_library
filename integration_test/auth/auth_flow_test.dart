@@ -55,6 +55,12 @@ void main() {
 
           final supabase = Supabase.instance.client;
           testDataHelper = TestDataHelper(supabase);
+
+          // Clear any existing session (important for test isolation)
+          TestReporter.logStep('Clearing any existing user session');
+          await supabase.auth.signOut();
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+
           final testEmail = testDataHelper.generateTestEmail();
           final testPassword = testDataHelper.generateTestPassword();
 
@@ -125,6 +131,11 @@ void main() {
           final supabase = Supabase.instance.client;
           testDataHelper = TestDataHelper(supabase);
 
+          // Clear any existing session (important for test isolation)
+          TestReporter.logStep('Clearing any existing user session');
+          await supabase.auth.signOut();
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+
           // Create test user first
           TestReporter.logStep('Creating test user');
           final testEmail = testDataHelper.generateTestEmail();
@@ -194,6 +205,11 @@ void main() {
 
           final supabase = Supabase.instance.client;
           testDataHelper = TestDataHelper(supabase);
+
+          // Clear any existing session (important for test isolation)
+          TestReporter.logStep('Clearing any existing user session');
+          await supabase.auth.signOut();
+          await tester.pumpAndSettle(const Duration(seconds: 2));
 
           // Create test user
           TestReporter.logStep('Creating test user');
@@ -269,6 +285,12 @@ void main() {
 
         final supabase = Supabase.instance.client;
         testDataHelper = TestDataHelper(supabase);
+
+        // Clear any existing session (important for test isolation)
+        TestReporter.logStep('Clearing any existing user session');
+        await supabase.auth.signOut();
+        await tester.pumpAndSettle(const Duration(seconds: 2));
+
         final testEmail = testDataHelper.generateTestEmail();
         final testPassword = testDataHelper.generateTestPassword();
 
@@ -283,9 +305,7 @@ void main() {
         await tester.enterText(find.byType(TextField).at(2), testPassword);
         await tester.pumpAndSettle();
 
-        await tester.tap(
-          find.widgetWithText(ElevatedButton, 'Zarejestruj się'),
-        );
+        await tester.tap(find.widgetWithText(FilledButton, 'Zarejestruj się'));
         await tester.pumpAndSettle(const Duration(seconds: 5));
 
         testUserId = supabase.auth.currentUser?.id;

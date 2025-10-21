@@ -94,7 +94,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return BlocConsumer<AuthBloc, AuthState>(
+    return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         // Show success message and navigate to login
         if (state is SignUpSuccess) {
@@ -121,145 +121,153 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         }
       },
-      builder: (context, state) {
-        final isLoading = state is AuthLoading;
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          final isLoading = state is AuthLoading;
 
-        return Scaffold(
-          appBar: AppBar(title: const Text('Rejestracja'), centerTitle: true),
-          body: SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // App icon/logo
-                      Icon(
-                        Icons.library_books,
-                        size: 80,
-                        color: colorScheme.primary,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Welcome text
-                      Text(
-                        'Utwórz konto',
-                        style: theme.textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+          return Scaffold(
+            appBar: AppBar(title: const Text('Rejestracja'), centerTitle: true),
+            body: SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // App icon/logo
+                        Icon(
+                          Icons.library_books,
+                          size: 80,
+                          color: colorScheme.primary,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Dołącz do naszej społeczności czytelników',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
+                        const SizedBox(height: 16),
+
+                        // Welcome text
+                        Text(
+                          'Utwórz konto',
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 48),
-
-                      // Email field
-                      AuthTextField(
-                        controller: _emailController,
-                        label: 'Adres e-mail',
-                        hintText: 'twoj@email.com',
-                        keyboardType: TextInputType.emailAddress,
-                        validator: _validateEmail,
-                        enabled: !isLoading,
-                        prefixIcon: const Icon(Icons.email_outlined),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Password field
-                      PasswordField(
-                        controller: _passwordController,
-                        label: 'Hasło',
-                        hintText: 'Min. 8 znaków',
-                        validator: _validatePassword,
-                        enabled: !isLoading,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Confirm password field
-                      PasswordField(
-                        controller: _confirmPasswordController,
-                        label: 'Powtórz hasło',
-                        validator: _validateConfirmPassword,
-                        enabled: !isLoading,
-                      ),
-                      const SizedBox(height: 32),
-
-                      // Register button
-                      FilledButton(
-                        onPressed: isLoading ? null : _handleRegister,
-                        style: FilledButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 48),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Dołącz do naszej społeczności czytelników',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        child: isLoading
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
+                        const SizedBox(height: 48),
+
+                        // Email field
+                        AuthTextField(
+                          controller: _emailController,
+                          label: 'Adres e-mail',
+                          hintText: 'twoj@email.com',
+                          keyboardType: TextInputType.emailAddress,
+                          validator: _validateEmail,
+                          enabled: !isLoading,
+                          prefixIcon: const Icon(Icons.email_outlined),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Password field
+                        PasswordField(
+                          controller: _passwordController,
+                          label: 'Hasło',
+                          hintText: 'Min. 8 znaków',
+                          validator: _validatePassword,
+                          enabled: !isLoading,
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Confirm password field
+                        PasswordField(
+                          controller: _confirmPasswordController,
+                          label: 'Powtórz hasło',
+                          validator: _validateConfirmPassword,
+                          enabled: !isLoading,
+                        ),
+                        const SizedBox(height: 32),
+
+                        // Register button
+                        FilledButton(
+                          onPressed: isLoading ? null : _handleRegister,
+                          style: FilledButton.styleFrom(
+                            minimumSize: const Size(double.infinity, 48),
+                          ),
+                          child: isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text('Zarejestruj się'),
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Divider
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Divider(color: colorScheme.outline),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: Text(
+                                'lub',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
                                 ),
-                              )
-                            : const Text('Zarejestruj się'),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Divider
-                      Row(
-                        children: [
-                          Expanded(child: Divider(color: colorScheme.outline)),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Text(
-                              'lub',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
                               ),
                             ),
-                          ),
-                          Expanded(child: Divider(color: colorScheme.outline)),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
+                            Expanded(
+                              child: Divider(color: colorScheme.outline),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
 
-                      // Login link
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Masz już konto? ',
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                          TextButton(
-                            onPressed: isLoading
-                                ? null
-                                : () {
-                                    Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginScreen(),
-                                      ),
-                                    );
-                                  },
-                            child: const Text('Zaloguj się'),
-                          ),
-                        ],
-                      ),
-                    ],
+                        // Login link
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Masz już konto? ',
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                            TextButton(
+                              onPressed: isLoading
+                                  ? null
+                                  : () {
+                                      Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginScreen(),
+                                        ),
+                                      );
+                                    },
+                              child: const Text('Zaloguj się'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
