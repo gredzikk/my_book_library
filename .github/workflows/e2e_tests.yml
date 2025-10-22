@@ -29,7 +29,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.32.4'
           channel: 'stable'
           cache: true
 
@@ -83,46 +83,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: |          
-            set -euo pipefail
-
-              # Ensure adb is available
-              export PATH="$ANDROID_SDK_ROOT/platform-tools:$PATH"
-
-              # Wait for any emulator device to be visible
-              adb wait-for-device
-
-              DEVICE=$(adb devices | awk '/emulator-.*device/{print $1; exit}')
-              if [ -z "$DEVICE" ]; then
-                echo "No emulator device found. Current adb devices:"
-                adb devices
-                exit 1
-              fi
-              echo "Using emulator device: $DEVICE"
-
-              # Wait for Android boot to complete (timeout after 5 minutes)
-              TIMEOUT=300
-              ELAPSED=0
-              until adb -s "$DEVICE" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' | grep -q '^1$'; do
-                sleep 2
-                ELAPSED=$((ELAPSED + 2))
-                if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
-                  echo "Emulator did not finish booting after $TIMEOUT seconds"
-                  adb -s "$DEVICE" shell getprop ro.build.version.release || true
-                  adb devices
-                  exit 1
-                fi
-              done
-
-              # Speed up UI operations
-              adb -s "$DEVICE" shell settings put global animator_duration_scale 0.0 || true
-              adb -s "$DEVICE" shell settings put global transition_animation_scale 0.0 || true
-              adb -s "$DEVICE" shell settings put global window_animation_scale 0.0 || true
-
-              # Run the single integration test file only (do not run whole test directory in same invocation)
-              flutter test integration_test/smoke/critical_path_test.dart \
-                --dart-define=SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }} \
-                --dart-define=SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
+          script: flutter test integration_test/smoke/critical_path_test.dart --dart-define=SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }} --dart-define=SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
 
       - name: Run E2E Tests - Auth Flow
         if: success() || failure()
@@ -134,46 +95,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: |
-            set -euo pipefail
-
-            # Ensure adb is available
-            export PATH="$ANDROID_SDK_ROOT/platform-tools:$PATH"
-
-            # Wait for any emulator device to be visible
-            adb wait-for-device
-
-            DEVICE=$(adb devices | awk '/emulator-.*device/{print $1; exit}')
-            if [ -z "$DEVICE" ]; then
-              echo "No emulator device found. Current adb devices:"
-              adb devices
-              exit 1
-            fi
-            echo "Using emulator device: $DEVICE"
-
-            # Wait for Android boot to complete (timeout after 5 minutes)
-            TIMEOUT=300
-            ELAPSED=0
-            until adb -s "$DEVICE" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' | grep -q '^1$'; do
-              sleep 2
-              ELAPSED=$((ELAPSED + 2))
-              if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
-                echo "Emulator did not finish booting after $TIMEOUT seconds"
-                adb -s "$DEVICE" shell getprop ro.build.version.release || true
-                adb devices
-                exit 1
-              fi
-            done
-
-            # Speed up UI operations
-            adb -s "$DEVICE" shell settings put global animator_duration_scale 0.0 || true
-            adb -s "$DEVICE" shell settings put global transition_animation_scale 0.0 || true
-            adb -s "$DEVICE" shell settings put global window_animation_scale 0.0 || true
-
-            # Run the single integration test file only (do not run whole test directory in same invocation)
-            flutter test integration_test/auth/auth_flow_test.dart \
-              --dart-define=SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }} \
-              --dart-define=SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
+          script: flutter test integration_test/auth/auth_flow_test.dart --dart-define=SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }} --dart-define=SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
 
       - name: Run E2E Tests - Book CRUD
         if: success() || failure()
@@ -185,46 +107,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: |
-            set -euo pipefail
-
-            # Ensure adb is available
-            export PATH="$ANDROID_SDK_ROOT/platform-tools:$PATH"
-
-            # Wait for any emulator device to be visible
-            adb wait-for-device
-
-            DEVICE=$(adb devices | awk '/emulator-.*device/{print $1; exit}')
-            if [ -z "$DEVICE" ]; then
-              echo "No emulator device found. Current adb devices:"
-              adb devices
-              exit 1
-            fi
-            echo "Using emulator device: $DEVICE"
-
-            # Wait for Android boot to complete (timeout after 5 minutes)
-            TIMEOUT=300
-            ELAPSED=0
-            until adb -s "$DEVICE" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' | grep -q '^1$'; do
-              sleep 2
-              ELAPSED=$((ELAPSED + 2))
-              if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
-                echo "Emulator did not finish booting after $TIMEOUT seconds"
-                adb -s "$DEVICE" shell getprop ro.build.version.release || true
-                adb devices
-                exit 1
-              fi
-            done
-
-            # Speed up UI operations
-            adb -s "$DEVICE" shell settings put global animator_duration_scale 0.0 || true
-            adb -s "$DEVICE" shell settings put global transition_animation_scale 0.0 || true
-            adb -s "$DEVICE" shell settings put global window_animation_scale 0.0 || true
-
-            # Run the single integration test file only (do not run whole test directory in same invocation)
-            flutter test integration_test/books/book_crud_test.dart \
-              --dart-define=SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }} \
-              --dart-define=SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
+          script: flutter test integration_test/books/book_crud_test.dart --dart-define=SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }} --dart-define=SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
 
       - name: Upload test results
         if: always()
