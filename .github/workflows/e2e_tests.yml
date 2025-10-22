@@ -40,7 +40,9 @@ jobs:
         run: flutter pub get
 
       - name: Run unit tests
-        run: flutter test --test-directory=test
+        # `flutter test` runs tests in the `test/` directory by default.
+        # --test-directory is not a valid flutter CLI option and causes CI to fail.
+        run: flutter test
 
       - name: Create .env file for testing
         run: |
