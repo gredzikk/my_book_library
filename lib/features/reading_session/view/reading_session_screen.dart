@@ -210,6 +210,7 @@ class _EndSessionDialogState extends State<_EndSessionDialog> {
           ),
           const SizedBox(height: 16),
           TextField(
+            key: const Key('end_session_page_field'),
             controller: _controller,
             keyboardType: TextInputType.number,
             autofocus: true,
@@ -228,8 +229,13 @@ class _EndSessionDialogState extends State<_EndSessionDialog> {
         ],
       ),
       actions: [
-        TextButton(onPressed: widget.onCancel, child: const Text('Anuluj')),
+        TextButton(
+          key: const Key('end_session_cancel_button'),
+          onPressed: widget.onCancel,
+          child: const Text('Anuluj'),
+        ),
         FilledButton(
+          key: const Key('end_session_save_button'),
           onPressed: _isValid
               ? () => widget.onSave(int.parse(_controller.text))
               : null,

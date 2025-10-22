@@ -10,6 +10,7 @@ class AuthenticationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('🔐 AuthenticationScreen - Building authentication screen');
     return const LoginScreen();
   }
 }

@@ -189,8 +189,8 @@ class _BookFormViewState extends State<_BookFormView> {
                 backgroundColor: Theme.of(context).colorScheme.primary,
               ),
             );
-            // Nawigacja powrotna do ekranu głównego
-            Navigator.of(context).popUntil((route) => route.isFirst);
+            // Nawigacja powrotna z wynikiem true aby odświeżyć listę książek
+            Navigator.of(context).pop(true);
           }
 
           // Obsługa błędów
@@ -214,6 +214,7 @@ class _BookFormViewState extends State<_BookFormView> {
               children: [
                 // Tytuł (wymagane)
                 TextFormField(
+                  key: const Key('book_form_title_field'),
                   controller: _titleController,
                   decoration: const InputDecoration(
                     labelText: 'Tytuł *',
@@ -228,6 +229,7 @@ class _BookFormViewState extends State<_BookFormView> {
 
                 // Autor (wymagane)
                 TextFormField(
+                  key: const Key('book_form_author_field'),
                   controller: _authorController,
                   decoration: const InputDecoration(
                     labelText: 'Autor *',
@@ -242,6 +244,7 @@ class _BookFormViewState extends State<_BookFormView> {
 
                 // Liczba stron (wymagane)
                 TextFormField(
+                  key: const Key('book_form_page_count_field'),
                   controller: _pageCountController,
                   decoration: const InputDecoration(
                     labelText: 'Liczba stron *',
@@ -257,6 +260,7 @@ class _BookFormViewState extends State<_BookFormView> {
 
                 // Gatunek (opcjonalne)
                 DropdownButtonFormField<String>(
+                  key: const Key('book_form_genre_dropdown'),
                   value: _availableGenres.any((g) => g.id == _selectedGenreId)
                       ? _selectedGenreId
                       : null,
@@ -350,6 +354,7 @@ class _BookFormViewState extends State<_BookFormView> {
 
                 // Przycisk zapisu
                 FilledButton.icon(
+                  key: const Key('book_form_save_button'),
                   onPressed: isLoading ? null : _handleSave,
                   icon: isLoading
                       ? const SizedBox(

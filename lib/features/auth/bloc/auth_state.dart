@@ -30,10 +30,14 @@ class Authenticated extends AuthState {
   /// The authenticated user
   final User user;
 
-  const Authenticated(this.user);
+  /// Timestamp to ensure each authenticated state is unique
+  /// This allows BlocBuilder to rebuild even for the same user
+  final DateTime timestamp;
+
+  Authenticated(this.user) : timestamp = DateTime.now();
 
   @override
-  List<Object?> get props => [user];
+  List<Object?> get props => [user.id, timestamp];
 }
 
 /// State when user is not authenticated

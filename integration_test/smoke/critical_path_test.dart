@@ -40,6 +40,8 @@ void main() {
         try {
           final supabase = Supabase.instance.client;
           testDataHelper = TestDataHelper(supabase);
+          await supabase.auth.signOut();
+
           await testDataHelper.cleanupTestUser(testUserId!);
           testUserId = null;
         } catch (e) {
@@ -84,7 +86,9 @@ void main() {
           TestReporter.logStep('Navigating to registration screen');
 
           // Look for register button/link on login screen
-          final registerButton = find.text('Zarejestruj się');
+          final registerButton = find.byKey(
+            const Key('login_to_register_button'),
+          );
           expect(registerButton, findsOneWidget);
           await tester.tap(registerButton);
           await tester.pumpAndSettle(const Duration(seconds: 2));
@@ -96,30 +100,32 @@ void main() {
           // ==========================================
           TestReporter.logStep('Filling registration form');
 
-          // Find email field by type or key
-          final emailField = find.byType(TextField).first;
+          // Find email field by key
+          final emailField = find.byKey(const Key('register_email_field'));
           await tester.enterText(emailField, testEmail);
           await tester.pumpAndSettle();
 
-          // Find password field
-          final passwordFields = find.byType(TextField);
-          await tester.enterText(passwordFields.at(1), testPassword);
+          // Find password field by key
+          final passwordField = find.byKey(
+            const Key('register_password_field'),
+          );
+          await tester.enterText(passwordField, testPassword);
           await tester.pumpAndSettle();
 
-          // Confirm password
-          await tester.enterText(passwordFields.at(2), testPassword);
+          // Confirm password by key
+          final confirmPasswordField = find.byKey(
+            const Key('register_confirm_password_field'),
+          );
+          await tester.enterText(confirmPasswordField, testPassword);
           await tester.pumpAndSettle();
 
           TestReporter.logStep('Submitting registration');
-          final submitButton = find.widgetWithText(
-            FilledButton,
-            'Zarejestruj się',
-          );
+          final submitButton = find.byKey(const Key('register_submit_button'));
           await tester.tap(submitButton);
-          await tester.pumpAndSettle(const Duration(seconds: 5));
+          await tester.pumpAndSettle(const Duration(seconds: 3));
 
           // ==========================================
-          // THEN: User should be registered and see onboarding or home
+          // THEN: In test env, user is auto-authenticated and sees home screen
           // ==========================================
           TestReporter.logStep('Verifying successful registration');
 
@@ -128,49 +134,75 @@ void main() {
           expect(
             user,
             isNotNull,
-            reason: 'User should be logged in after registration',
+            reason: 'User should be auto-authenticated in test environment',
           );
           testUserId = user!.id;
 
-          TestReporter.logAssertion('User registered with ID: $testUserId');
+          TestReporter.logAssertion(
+            'User auto-authenticated with ID: $testUserId',
+          );
 
-          // Wait for home screen to fully load
-          await tester.pumpAndSettle(const Duration(seconds: 2));
+          // Wait for navigation to home screen
+          await tester.pumpAndSettle(const Duration(seconds: 3));
+
+          // Verify we're on the home screen
+          expect(
+            find.text('Moja Biblioteka'),
+            findsOneWidget,
+            reason: 'Should be on home screen after auto-authentication',
+          );
+          TestReporter.logAssertion('Home screen displayed after registration');
 
           // ==========================================
           // WHEN: User adds a book manually
           // ==========================================
           TestReporter.logStep('Adding a new book');
 
-          // Find and tap the add book button (FAB)
-          final addButton = find.byType(FloatingActionButton);
-          expect(addButton, findsOneWidget);
+          // Find and tap the add book button (FAB) by key
+          final addButton = find.byKey(const Key('add_book_fab'));
+          expect(
+            addButton,
+            findsOneWidget,
+            reason: 'FloatingActionButton should be visible on home screen',
+          );
           await tester.tap(addButton);
           await tester.pumpAndSettle(const Duration(seconds: 2));
 
           TestReporter.logAssertion('Add book screen displayed');
 
-          // Fill book details manually
+          // Tap on "Add manually" button to navigate to the form
+          TestReporter.logStep('Navigating to manual entry form');
+          final addManuallyButton = find.byKey(
+            const Key('add_book_manually_button'),
+          );
+          expect(addManuallyButton, findsOneWidget);
+          await tester.tap(addManuallyButton);
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+
+          TestReporter.logAssertion('Book form screen displayed');
+
+          // Fill book details manually using keys
           TestReporter.logStep('Filling book details');
-          final bookTitleField = find.byType(TextField).first;
+          final bookTitleField = find.byKey(const Key('book_form_title_field'));
           await tester.enterText(bookTitleField, 'Test Book E2E');
           await tester.pumpAndSettle();
 
-          final bookAuthorField = find.byType(TextField).at(1);
+          final bookAuthorField = find.byKey(
+            const Key('book_form_author_field'),
+          );
           await tester.enterText(bookAuthorField, 'Test Author E2E');
           await tester.pumpAndSettle();
 
           // Page count
-          final pageCountField = find.byType(TextField).at(2);
+          final pageCountField = find.byKey(
+            const Key('book_form_page_count_field'),
+          );
           await tester.enterText(pageCountField, '300');
           await tester.pumpAndSettle();
 
           // Save book
           TestReporter.logStep('Saving book');
-          final saveBookButton = find.widgetWithText(
-            FilledButton,
-            'Dodaj książkę',
-          );
+          final saveBookButton = find.byKey(const Key('book_form_save_button'));
           await tester.tap(saveBookButton);
           await tester.pumpAndSettle(const Duration(seconds: 3));
 
@@ -185,15 +217,37 @@ void main() {
           // ==========================================
           TestReporter.logStep('Starting reading session');
 
+          // Scroll to make the book visible if needed
+          final bookFinder = find.text('Test Book E2E');
+          await tester.ensureVisible(bookFinder);
+          await tester.pumpAndSettle(const Duration(milliseconds: 500));
+
           // Tap on the book to open details
-          await tester.tap(find.text('Test Book E2E'));
+          await tester.tap(bookFinder);
           await tester.pumpAndSettle(const Duration(seconds: 2));
+
+          // Wait for book details to fully load by checking for author name
+          await tester.pumpAndSettle(const Duration(seconds: 1));
+          expect(
+            find.byKey(const Key('book_detail_author_text')),
+            findsOneWidget,
+            reason: 'Book details should display author name',
+          );
 
           TestReporter.logAssertion('Book details screen displayed');
 
-          // Find and tap "Start reading" button
-          final startReadingButton = find.text('Rozpocznij czytanie');
-          expect(startReadingButton, findsOneWidget);
+          // Find and tap "Start reading" button using key
+          TestReporter.logStep('Looking for start reading button');
+          await tester.pumpAndSettle(const Duration(seconds: 2));
+
+          final startReadingButton = find.byKey(
+            const Key('start_reading_button'),
+          );
+          expect(
+            startReadingButton,
+            findsOneWidget,
+            reason: 'Start reading button should be visible for new books',
+          );
           await tester.tap(startReadingButton);
           await tester.pumpAndSettle(const Duration(seconds: 2));
 
@@ -206,7 +260,7 @@ void main() {
           await tester.pump(const Duration(seconds: 5));
 
           TestReporter.logStep('Ending reading session');
-          final endSessionButton = find.text('Zakończ sesję');
+          final endSessionButton = find.byKey(const Key('end_session_button'));
           expect(endSessionButton, findsOneWidget);
           await tester.tap(endSessionButton);
           await tester.pumpAndSettle(const Duration(seconds: 1));
@@ -214,11 +268,13 @@ void main() {
           // Dialog should appear asking for last page
           TestReporter.logAssertion('End session dialog displayed');
 
-          final lastPageField = find.byType(TextField).first;
+          final lastPageField = find.byKey(const Key('end_session_page_field'));
           await tester.enterText(lastPageField, '50');
           await tester.pumpAndSettle();
 
-          final confirmButton = find.widgetWithText(FilledButton, 'Zapisz');
+          final confirmButton = find.byKey(
+            const Key('end_session_save_button'),
+          );
           await tester.tap(confirmButton);
           await tester.pumpAndSettle(const Duration(seconds: 3));
 

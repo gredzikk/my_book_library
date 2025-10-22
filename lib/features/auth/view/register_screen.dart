@@ -4,6 +4,7 @@ import '../bloc/bloc.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/password_field.dart';
 import 'login_screen.dart';
+import '../../../widgets/auth_gate.dart';
 
 /// Registration screen for new users
 ///
@@ -96,23 +97,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        // Show success message and navigate to login
+        // Debug logging
+        print('📝 RegisterScreen - State changed to: ${state.runtimeType}');
+        if (state is AuthError) {
+          print('📝 RegisterScreen - AuthError message: ${state.message}');
+        }
+
+        // Show success message when registration succeeds
         if (state is SignUpSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'Sprawdź swoją skrzynkę pocztową, aby dokończyć rejestrację.',
-              ),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 5),
-            ),
-          );
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
-          );
+          print('✅ RegisterScreen - SignUpSuccess');
+
+          // Wait a moment to check if user gets auto-authenticated
+          // This happens in test environment with email auto-confirmation
+          Future.delayed(const Duration(milliseconds: 500), () {
+            // Check if we're still mounted and not already authenticated
+            if (!context.mounted) return;
+
+            final currentState = context.read<AuthBloc>().state;
+            if (currentState is Authenticated) {
+              print(
+                '📝 RegisterScreen - User already authenticated, removing auth routes',
+              );
+              // User is already authenticated, remove all auth routes to reveal home screen
+              // Use pushAndRemoveUntil to clear the navigation stack and go back to AuthGate
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const AuthGate()),
+                (route) => false,
+              );
+            } else {
+              print(
+                '📝 RegisterScreen - User needs email confirmation, navigating to login',
+              );
+              // User needs to confirm email, navigate to login
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Sprawdź swoją skrzynkę pocztową, aby dokończyć rejestrację.',
+                  ),
+                  backgroundColor: Colors.green,
+                  duration: Duration(seconds: 5),
+                ),
+              );
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            }
+          });
         }
         // Show error messages
         else if (state is AuthError) {
+          print('❌ RegisterScreen - Showing error SnackBar');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
@@ -165,6 +199,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         // Email field
                         AuthTextField(
+                          key: const Key('register_email_field'),
                           controller: _emailController,
                           label: 'Adres e-mail',
                           hintText: 'twoj@email.com',
@@ -177,6 +212,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         // Password field
                         PasswordField(
+                          key: const Key('register_password_field'),
                           controller: _passwordController,
                           label: 'Hasło',
                           hintText: 'Min. 8 znaków',
@@ -187,6 +223,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         // Confirm password field
                         PasswordField(
+                          key: const Key('register_confirm_password_field'),
                           controller: _confirmPasswordController,
                           label: 'Powtórz hasło',
                           validator: _validateConfirmPassword,
@@ -196,6 +233,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         // Register button
                         FilledButton(
+                          key: const Key('register_submit_button'),
                           onPressed: isLoading ? null : _handleRegister,
                           style: FilledButton.styleFrom(
                             minimumSize: const Size(double.infinity, 48),
@@ -245,6 +283,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               style: theme.textTheme.bodyMedium,
                             ),
                             TextButton(
+                              key: const Key('register_to_login_button'),
                               onPressed: isLoading
                                   ? null
                                   : () {

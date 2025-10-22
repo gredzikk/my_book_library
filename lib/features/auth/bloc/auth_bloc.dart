@@ -124,6 +124,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _authService.signUp(email: event.email, password: event.password);
 
       _logger.info('Sign up successful for: ${event.email}');
+      // Always emit SignUpSuccess, regardless of auto-confirmation
+      // This provides consistent UX in both test and production
       emit(SignUpSuccess(event.email));
     } on ValidationException catch (e) {
       _logger.warning('Sign up failed: validation - ${e.message}');

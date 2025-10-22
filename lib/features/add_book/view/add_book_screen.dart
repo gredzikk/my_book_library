@@ -196,6 +196,7 @@ class _AddBookView extends StatelessWidget {
 
                 // Przycisk dodawania ręcznego
                 FilledButton.icon(
+                  key: const Key('add_book_manually_button'),
                   onPressed: isLoading
                       ? null
                       : () async {

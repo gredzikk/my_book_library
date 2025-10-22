@@ -55,6 +55,7 @@ class BookInfoHeader extends StatelessWidget {
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
+                          key: const Key('book_detail_author_text'),
                           book.author,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             color: colorScheme.onSurfaceVariant,

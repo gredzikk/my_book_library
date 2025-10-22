@@ -29,7 +29,9 @@ class HomeScreenContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('🏠 HomeScreenContent - Building home screen content');
     final appBar = AppBar(
+      key: const Key('home_app_bar'),
       title: const Text('Moja Biblioteka'),
       actions: [
         if (showSkipButton && onSkip != null)
@@ -121,7 +123,9 @@ class HomeScreenContent extends StatelessWidget {
 
   /// Builds the FloatingActionButton with optional Showcase wrapper
   Widget _buildFloatingActionButton(BuildContext context) {
+    print('🏠 HomeScreenContent - Building FloatingActionButton');
     final fab = FloatingActionButton(
+      key: const Key('add_book_fab'),
       onPressed: () async {
         // Navigate to add book screen and wait for result
         final result = await Navigator.of(

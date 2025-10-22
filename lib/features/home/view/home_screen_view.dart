@@ -13,8 +13,10 @@ class HomeScreenView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('🏠 HomeScreenView - Building home screen view');
     return BlocProvider(
       create: (context) {
+        print('🏠 HomeScreenView - Creating HomeScreenBloc');
         final bookService = context.read<BookService>();
         return HomeScreenBloc(bookService)..add(const LoadBooksEvent());
       },

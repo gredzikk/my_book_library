@@ -82,6 +82,10 @@ class _LoginScreenState extends State<LoginScreen> {
         if (state is AuthError) {
           print('🔍 LoginScreen - AuthError message: ${state.message}');
         }
+        if (state is Authenticated) {
+          print('✅ LoginScreen - User authenticated: ${state.user.id}');
+          print('📝 LoginScreen - AuthGate should rebuild to show HomeScreen');
+        }
 
         // Show success message when confirmation email is resent
         if (state is ConfirmationEmailResent) {
@@ -172,6 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         // Email field
                         AuthTextField(
+                          key: const Key('login_email_field'),
                           controller: _emailController,
                           label: 'Adres e-mail',
                           hintText: 'twoj@email.com',
@@ -184,6 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         // Password field
                         PasswordField(
+                          key: const Key('login_password_field'),
                           controller: _passwordController,
                           label: 'Hasło',
                           validator: _validatePassword,
@@ -212,6 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         // Login button
                         FilledButton(
+                          key: const Key('login_submit_button'),
                           onPressed: isLoading ? null : _handleLogin,
                           style: FilledButton.styleFrom(
                             minimumSize: const Size(double.infinity, 48),
@@ -261,6 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: theme.textTheme.bodyMedium,
                             ),
                             TextButton(
+                              key: const Key('login_to_register_button'),
                               onPressed: isLoading
                                   ? null
                                   : () {

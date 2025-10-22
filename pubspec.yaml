@@ -43,6 +43,7 @@ dependency_overrides:
 flutter:
   assets:
     - .env
+    - .env.prod
   uses-material-design: true
 
 supabase_codegen:

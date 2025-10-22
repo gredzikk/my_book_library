@@ -16,6 +16,7 @@ class EndSessionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FilledButton.icon(
+      key: const Key('end_session_button'),
       onPressed: isLoading ? null : onPressed,
       icon: isLoading
           ? const SizedBox(

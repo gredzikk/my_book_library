@@ -30,6 +30,7 @@ class BookGrid extends StatelessWidget {
         final book = books[index];
         final isFirstBook = index == 0;
         final tile = BookGridTile(
+          key: Key('book_item_${book.id}'),
           book: book,
           onTap: () async {
             // Navigate to book details and wait for result

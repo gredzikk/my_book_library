@@ -15,7 +15,26 @@ class AuthGate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('🚪 AuthGate - build() method called');
-    return BlocBuilder<AuthBloc, AuthState>(
+    print('🚪 AuthGate - Checking BlocProvider availability');
+
+    // Test if we can access the AuthBloc
+    try {
+      final authBloc = context.read<AuthBloc>();
+      print('🚪 AuthGate - AuthBloc found: ${authBloc.state.runtimeType}');
+    } catch (e) {
+      print('🚪 AuthGate - ERROR: Cannot access AuthBloc: $e');
+    }
+
+    return BlocConsumer<AuthBloc, AuthState>(
+      listenWhen: (previous, current) {
+        print(
+          '🚪 AuthGate - listenWhen: ${previous.runtimeType} -> ${current.runtimeType}',
+        );
+        return true;
+      },
+      listener: (context, state) {
+        print('🚪 AuthGate - listener called with state: ${state.runtimeType}');
+      },
       buildWhen: (previous, current) {
         // Always rebuild to ensure UI stays in sync
         // Log state transitions
@@ -27,10 +46,6 @@ class AuthGate extends StatelessWidget {
       builder: (context, state) {
         // Debug logging
         print('🚪 AuthGate - builder called with state: ${state.runtimeType}');
-
-        if (state is Authenticated) {
-          print('🚪 AuthGate - User authenticated: ${state.user.id}');
-        }
 
         // Podczas inicjalizacji pokazujemy wskaźnik ładowania
         if (state is AuthInitial) {

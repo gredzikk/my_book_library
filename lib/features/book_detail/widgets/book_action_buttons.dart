@@ -68,28 +68,34 @@ class BookActionButtons extends StatelessWidget {
 
     String label;
     IconData icon;
+    Key buttonKey;
 
     switch (book.status) {
       case BookStatus.unread:
       case BookStatus.planned:
         label = 'Rozpocznij czytanie';
         icon = Icons.play_arrow;
+        buttonKey = const Key('start_reading_button');
         break;
       case BookStatus.in_progress:
         label = 'Kontynuuj czytanie';
         icon = Icons.auto_stories;
+        buttonKey = const Key('continue_reading_button');
         break;
       case BookStatus.finished:
         label = 'Czytaj ponownie';
         icon = Icons.refresh;
+        buttonKey = const Key('read_again_button');
         break;
       case BookStatus.abandoned:
         label = 'Wznów czytanie';
         icon = Icons.replay;
+        buttonKey = const Key('resume_reading_button');
         break;
     }
 
     return FilledButton.icon(
+      key: buttonKey,
       onPressed: onStartSession,
       icon: Icon(icon),
       label: Text(label),

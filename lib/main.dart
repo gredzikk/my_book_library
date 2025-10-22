@@ -35,8 +35,22 @@ Future<void> main() async {
   //.env.dev for test db instance
   //.env.prod for production
   await dotenv.load(fileName: ".env");
-  String supabaseUrl = dotenv.env['SUPABASE_TEST_URL']!;
-  String supabaseAnonKey = dotenv.env['SUPABASE_TEST_ANON_KEY']!;
+
+  // Try to get variables from dart-define
+  String supabaseUrl = const String.fromEnvironment(
+    'SUPABASE_URL',
+    defaultValue: '',
+  );
+  String supabaseAnonKey = const String.fromEnvironment(
+    'SUPABASE_ANON_KEY',
+    defaultValue: '',
+  );
+
+  // If not available, fall back to .env file
+  if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty) {
+    supabaseUrl = dotenv.env['SUPABASE_URL']!;
+    supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY']!;
+  }
 
   // Initialize Supabase
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
