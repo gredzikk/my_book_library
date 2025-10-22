@@ -39,15 +39,15 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Create .env file for testing
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_TEST_URL }}" >> .env
+          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}" >> .env
+
       - name: Run unit tests
         # `flutter test` runs tests in the `test/` directory by default.
         # --test-directory is not a valid flutter CLI option and causes CI to fail.
         run: flutter test
-
-      - name: Create .env file for testing
-        run: |
-          echo "SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }}" >> .env
-          echo "SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}" >> .env
 
       - name: Enable KVM (for Android Emulator)
         run: |
