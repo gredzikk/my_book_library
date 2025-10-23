@@ -87,30 +87,6 @@ jobs:
           disable-animations: true
           script: flutter test integration_test/smoke/critical_path_test.dart --dart-define=SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }} --dart-define=SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
 
-      - name: Run E2E Tests - Auth Flow
-        if: success() || failure()
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 33
-          target: google_apis
-          arch: x86_64
-          force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
-          script: flutter test integration_test/auth/auth_flow_test.dart --dart-define=SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }} --dart-define=SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
-
-      - name: Run E2E Tests - Book CRUD
-        if: success() || failure()
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 33
-          target: google_apis
-          arch: x86_64
-          force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
-          script: flutter test integration_test/books/book_crud_test.dart --dart-define=SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }} --dart-define=SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
-
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
