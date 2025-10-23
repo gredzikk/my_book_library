@@ -63,6 +63,13 @@ void main() {
           // GIVEN: App is launched
           // ==========================================
           TestReporter.logStep('Launching application');
+
+          // Set a realistic screen size for testing (standard phone size)
+          // Default test size is 800x600, but CI might use smaller
+          await tester.binding.setSurfaceSize(
+            const Size(412, 915),
+          ); // Pixel 6 size
+
           await app.main();
           await tester.pumpAndSettle(const Duration(seconds: 3));
 
