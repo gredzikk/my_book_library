@@ -62,6 +62,8 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  static final Logger _logger = Logger('MyApp');
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -90,8 +92,8 @@ class MyApp extends StatelessWidget {
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, themeState) {
-          print(
-            '📱 MaterialApp - Rebuilding with theme: ${themeState.runtimeType}',
+          _logger.fine(
+            'MaterialApp - Rebuilding with theme: ${themeState.runtimeType}',
           );
           return MaterialApp(
             title: 'My Book Library',

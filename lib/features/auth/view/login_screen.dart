@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import '../bloc/bloc.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/password_field.dart';
@@ -25,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  static final Logger _logger = Logger('LoginScreen');
 
   @override
   void dispose() {
@@ -78,18 +80,18 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         // Debug logging
-        print('🔍 LoginScreen - State changed to: ${state.runtimeType}');
+        _logger.fine('State changed to: ${state.runtimeType}');
         if (state is AuthError) {
-          print('🔍 LoginScreen - AuthError message: ${state.message}');
+          _logger.fine('AuthError message: ${state.message}');
         }
         if (state is Authenticated) {
-          print('✅ LoginScreen - User authenticated: ${state.user.id}');
-          print('📝 LoginScreen - AuthGate should rebuild to show HomeScreen');
+          _logger.fine('User authenticated: ${state.user.id}');
+          _logger.fine('AuthGate should rebuild to show HomeScreen');
         }
 
         // Show success message when confirmation email is resent
         if (state is ConfirmationEmailResent) {
-          print('✅ LoginScreen - Showing confirmation email resent message');
+          _logger.fine('Showing confirmation email resent message');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -102,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
         // Show error messages with option to resend confirmation
         else if (state is AuthError) {
-          print('❌ LoginScreen - Showing error SnackBar');
+          _logger.fine('Showing error SnackBar');
           final isEmailNotConfirmed =
               state.message.toLowerCase().contains('nie został potwierdzony') ||
               state.message.toLowerCase().contains('not confirmed');

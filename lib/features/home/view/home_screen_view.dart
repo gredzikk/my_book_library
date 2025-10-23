@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import '../../../services/book_service.dart';
 import '../bloc/bloc.dart';
 import 'home_screen_content.dart';
@@ -11,12 +12,14 @@ import 'home_screen_content.dart';
 class HomeScreenView extends StatelessWidget {
   const HomeScreenView({super.key});
 
+  static final Logger _logger = Logger('HomeScreenView');
+
   @override
   Widget build(BuildContext context) {
-    print('🏠 HomeScreenView - Building home screen view');
+    _logger.fine('Building home screen view');
     return BlocProvider(
       create: (context) {
-        print('🏠 HomeScreenView - Creating HomeScreenBloc');
+        _logger.fine('Creating HomeScreenBloc');
         final bookService = context.read<BookService>();
         return HomeScreenBloc(bookService)..add(const LoadBooksEvent());
       },

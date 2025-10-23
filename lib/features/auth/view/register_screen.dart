@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import '../bloc/bloc.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/password_field.dart';
@@ -26,6 +27,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  static final Logger _logger = Logger('RegisterScreen');
 
   @override
   void dispose() {
@@ -98,14 +100,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         // Debug logging
-        print('📝 RegisterScreen - State changed to: ${state.runtimeType}');
+        _logger.fine('State changed to: ${state.runtimeType}');
         if (state is AuthError) {
-          print('📝 RegisterScreen - AuthError message: ${state.message}');
+          _logger.fine('AuthError message: ${state.message}');
         }
 
         // Show success message when registration succeeds
         if (state is SignUpSuccess) {
-          print('✅ RegisterScreen - SignUpSuccess');
+          _logger.fine('SignUpSuccess');
 
           // Wait a moment to check if user gets auto-authenticated
           // This happens in test environment with email auto-confirmation
@@ -115,9 +117,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
             final currentState = context.read<AuthBloc>().state;
             if (currentState is Authenticated) {
-              print(
-                '📝 RegisterScreen - User already authenticated, removing auth routes',
-              );
+              _logger.fine('User already authenticated, removing auth routes');
               // User is already authenticated, remove all auth routes to reveal home screen
               // Use pushAndRemoveUntil to clear the navigation stack and go back to AuthGate
               Navigator.of(context).pushAndRemoveUntil(
@@ -125,8 +125,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 (route) => false,
               );
             } else {
-              print(
-                '📝 RegisterScreen - User needs email confirmation, navigating to login',
+              _logger.fine(
+                'User needs email confirmation, navigating to login',
               );
               // User needs to confirm email, navigate to login
               ScaffoldMessenger.of(context).showSnackBar(
@@ -146,7 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
         // Show error messages
         else if (state is AuthError) {
-          print('❌ RegisterScreen - Showing error SnackBar');
+          _logger.fine('Showing error SnackBar');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),

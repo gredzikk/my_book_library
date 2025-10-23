@@ -311,13 +311,6 @@ void main() {
         testUserId = supabase.auth.currentUser?.id;
         expect(testUserId, isNotNull);
 
-        // Skip onboarding if present
-        final skipButton = find.text('Pomiń');
-        if (skipButton.evaluate().isNotEmpty) {
-          await tester.tap(skipButton);
-          await tester.pumpAndSettle(const Duration(seconds: 2));
-        }
-
         TestReporter.logAssertion('User logged in');
 
         // WHEN: User logs out

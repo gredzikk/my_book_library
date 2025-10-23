@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:showcaseview/showcaseview.dart';
 import '../bloc/bloc.dart';
 import '../widgets/widgets.dart';
@@ -15,33 +16,24 @@ class HomeScreenContent extends StatelessWidget {
   final GlobalKey? appBarKey;
   final GlobalKey? fabKey;
   final GlobalKey? firstBookKey;
-  final bool showSkipButton;
   final VoidCallback? onSkip;
+
+  static final Logger _logger = Logger('HomeScreenContent');
 
   const HomeScreenContent({
     super.key,
     this.appBarKey,
     this.fabKey,
     this.firstBookKey,
-    this.showSkipButton = false,
     this.onSkip,
   });
 
   @override
   Widget build(BuildContext context) {
-    print('🏠 HomeScreenContent - Building home screen content');
     final appBar = AppBar(
       key: const Key('home_app_bar'),
       title: const Text('Moja Biblioteka'),
       actions: [
-        if (showSkipButton && onSkip != null)
-          TextButton(
-            onPressed: onSkip,
-            child: Text(
-              'Pomiń',
-              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-            ),
-          ),
         const FilterSortButton(),
         IconButton(
           icon: const Icon(Icons.person),
@@ -54,8 +46,6 @@ class HomeScreenContent extends StatelessWidget {
         ),
       ],
     );
-
-    // FloatingActionButton is built inline below (with optional showcase key)
 
     return Scaffold(
       appBar: appBarKey != null
@@ -123,7 +113,7 @@ class HomeScreenContent extends StatelessWidget {
 
   /// Builds the FloatingActionButton with optional Showcase wrapper
   Widget _buildFloatingActionButton(BuildContext context) {
-    print('🏠 HomeScreenContent - Building FloatingActionButton');
+    _logger.fine('Building FloatingActionButton');
     final fab = FloatingActionButton(
       key: const Key('add_book_fab'),
       onPressed: () async {
