@@ -6,6 +6,7 @@ import '../widgets/auth_text_field.dart';
 import '../widgets/password_field.dart';
 import 'register_screen.dart';
 import 'forgot_password_screen.dart';
+import '../../../widgets/auth_gate.dart';
 
 /// Login screen for user authentication
 ///
@@ -84,13 +85,28 @@ class _LoginScreenState extends State<LoginScreen> {
         if (state is AuthError) {
           _logger.fine('AuthError message: ${state.message}');
         }
+
+        // Handle successful authentication
         if (state is Authenticated) {
           _logger.fine('User authenticated: ${state.user.id}');
-          _logger.fine('AuthGate should rebuild to show HomeScreen');
-        }
 
+          // Wait a moment to ensure state is fully propagated
+          Future.delayed(const Duration(milliseconds: 100), () {
+            if (!context.mounted) return;
+
+            _logger.fine(
+              'Clearing navigation stack to reveal AuthGate with HomeScreen',
+            );
+            // Clear the navigation stack and return to AuthGate
+            // which will now show HomeScreenView for authenticated user
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (_) => const AuthGate()),
+              (route) => false,
+            );
+          });
+        }
         // Show success message when confirmation email is resent
-        if (state is ConfirmationEmailResent) {
+        else if (state is ConfirmationEmailResent) {
           _logger.fine('Showing confirmation email resent message');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -132,7 +148,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           );
         }
-        // Navigation is handled by AuthGate via BlocBuilder
       },
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {

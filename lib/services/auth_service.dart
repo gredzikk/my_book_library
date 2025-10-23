@@ -218,7 +218,7 @@ class AuthService implements IAuthService {
       await _auth.signUp(
         email: email.trim(),
         password: password,
-        //emailRedirectTo: 'io.supabase.mybooklibrary://login-callback',
+        emailRedirectTo: 'io.supabase.mybooklibrary://login-callback',
       );
 
       stopwatch.stop();
