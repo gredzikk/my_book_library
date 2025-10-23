@@ -82,12 +82,10 @@ class MockGoogleBooksService extends GoogleBooksService {
 
     // Check if we have mock data for this ISBN
     if (_mockBooks.containsKey(cleanIsbn)) {
-      print('[MockGoogleBooksService] Returning mock data for ISBN: $isbn');
       return _mockBooks[cleanIsbn];
     }
 
     // ISBN not found
-    print('[MockGoogleBooksService] No mock data for ISBN: $isbn');
     return null;
   }
 

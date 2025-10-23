@@ -1,41 +1,52 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logging/logging.dart';
 
 /// Reporter for E2E tests with logging and screenshot capabilities
 class TestReporter {
+  static final Logger _logger = Logger('TestReporter');
+
   /// Log test start
   static void logTestStart(String testName) {
     final timestamp = DateTime.now().toIso8601String();
-    print('\n╔════════════════════════════════════════════════════════════');
-    print('║ [E2E] Test Started: $testName');
-    print('║ [E2E] Time: $timestamp');
-    print('╚════════════════════════════════════════════════════════════\n');
+    _logger.info(
+      '\n╔════════════════════════════════════════════════════════════',
+    );
+    _logger.info('║ [E2E] Test Started: $testName');
+    _logger.info('║ [E2E] Time: $timestamp');
+    _logger.info(
+      '╚════════════════════════════════════════════════════════════\n',
+    );
   }
 
   /// Log test end
   static void logTestEnd(String testName, Duration duration) {
-    print('\n╔════════════════════════════════════════════════════════════');
-    print('║ [E2E] Test Completed: $testName');
-    print(
+    _logger.info(
+      '\n╔════════════════════════════════════════════════════════════',
+    );
+    _logger.info('║ [E2E] Test Completed: $testName');
+    _logger.info(
       '║ [E2E] Duration: ${duration.inSeconds}s (${duration.inMilliseconds}ms)',
     );
-    print('╚════════════════════════════════════════════════════════════\n');
+    _logger.info(
+      '╚════════════════════════════════════════════════════════════\n',
+    );
   }
 
   /// Log test step
   static void logStep(String stepDescription) {
-    print('  → [E2E] STEP: $stepDescription');
+    _logger.info('  → [E2E] STEP: $stepDescription');
   }
 
   /// Log test assertion
   static void logAssertion(String assertion) {
-    print('  ✓ [E2E] ASSERT: $assertion');
+    _logger.info('  ✓ [E2E] ASSERT: $assertion');
   }
 
   /// Log error
   static void logError(String error, [StackTrace? stackTrace]) {
-    print('  ✗ [E2E] ERROR: $error');
+    _logger.severe('  ✗ [E2E] ERROR: $error');
     if (stackTrace != null) {
-      print('  Stack trace: $stackTrace');
+      _logger.severe('  Stack trace: $stackTrace');
     }
   }
 
@@ -45,18 +56,20 @@ class TestReporter {
       // Note: Screenshots work better on physical devices
       // On emulator, this might not always work
       await tester.pumpAndSettle();
-      print('  📸 [E2E] Screenshot taken: $name.png');
+      _logger.info('  📸 [E2E] Screenshot taken: $name.png');
 
       // Flutter's integration_test automatically saves screenshots
       // when expectLater is used with matchesGoldenFile
       // For basic screenshot, we just log it
     } catch (e) {
-      print('  ⚠ [E2E] Failed to take screenshot: $e');
+      _logger.severe('  ⚠ [E2E] Failed to take screenshot: $e');
     }
   }
 
   /// Log performance metric
   static void logPerformance(String metric, Duration duration) {
-    print('  ⏱ [E2E] Performance: $metric took ${duration.inMilliseconds}ms');
+    _logger.info(
+      '  ⏱ [E2E] Performance: $metric took ${duration.inMilliseconds}ms',
+    );
   }
 }

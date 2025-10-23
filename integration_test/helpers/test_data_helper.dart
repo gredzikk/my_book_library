@@ -1,8 +1,11 @@
 import 'dart:math';
+import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Helper class for managing test data in E2E tests
 class TestDataHelper {
+  static final Logger _logger = Logger('TestDataHelper');
+
   final SupabaseClient supabase;
   final _random = Random();
 
@@ -30,7 +33,7 @@ class TestDataHelper {
           .maybeSingle();
       return response?['id'] as String?;
     } catch (e) {
-      print('Error getting user ID: $e');
+      _logger.severe('Error getting user ID: $e');
       return null;
     }
   }
@@ -39,34 +42,30 @@ class TestDataHelper {
   /// IMPORTANT: Must be called in tearDown to avoid polluting test database
   Future<void> cleanupTestUser(String userId) async {
     try {
-      print('[TestDataHelper] Cleaning up user: $userId');
+      _logger.info('[TestDataHelper] Cleaning up user: $userId');
 
       // 1. Delete reading sessions first (foreign key constraint)
       await supabase.from('reading_sessions').delete().eq('user_id', userId);
-      print('[TestDataHelper] Deleted reading sessions');
+      _logger.info('[TestDataHelper] Deleted reading sessions');
 
       // 2. Delete books
       await supabase.from('books').delete().eq('user_id', userId);
-      print('[TestDataHelper] Deleted books');
-
-      // 3. Delete user profile
-      await supabase.from('profiles').delete().eq('id', userId);
-      print('[TestDataHelper] Deleted profile');
+      _logger.info('[TestDataHelper] Deleted books');
 
       // 4. Delete auth user (requires service role key or admin API)
       // Note: This might not work with anon key, but we try
       try {
         await supabase.auth.admin.deleteUser(userId);
-        print('[TestDataHelper] Deleted auth user');
+        _logger.info('[TestDataHelper] Deleted auth user');
       } catch (e) {
-        print(
+        _logger.severe(
           '[TestDataHelper] Could not delete auth user (may require admin key): $e',
         );
       }
 
-      print('[TestDataHelper] Cleanup completed for user: $userId');
+      _logger.info('[TestDataHelper] Cleanup completed for user: $userId');
     } catch (e) {
-      print('[TestDataHelper] Error during cleanup: $e');
+      _logger.severe('[TestDataHelper] Error during cleanup: $e');
       // Don't rethrow - we want tests to complete even if cleanup fails
     }
   }
@@ -88,7 +87,7 @@ class TestDataHelper {
             'status': i == 0
                 ? 'not_started'
                 : (i == 1 ? 'in_progress' : 'read'),
-            'isbn': '978000000000${i}',
+            'isbn': '978000000000$i',
           })
           .select('id')
           .single();
@@ -96,7 +95,7 @@ class TestDataHelper {
       bookIds.add(response['id'] as String);
     }
 
-    print('[TestDataHelper] Seeded $count test books for user: $userId');
+    _logger.info('[TestDataHelper] Seeded $count test books for user: $userId');
     return bookIds;
   }
 
@@ -119,7 +118,9 @@ class TestDataHelper {
       });
     }
 
-    print('[TestDataHelper] Seeded $count test sessions for book: $bookId');
+    _logger.info(
+      '[TestDataHelper] Seeded $count test sessions for book: $bookId',
+    );
   }
 
   /// Create a fully set up test user with books and sessions
