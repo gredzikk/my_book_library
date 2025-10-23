@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../add_book/add_book.dart';
+import '../bloc/bloc.dart';
 
 /// Empty state widget displayed when user has no books
 ///
@@ -36,12 +38,18 @@ class EmptyStateWidget extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             FilledButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(
+              onPressed: () async {
+                // Navigate to add book screen and wait for result
+                final result = await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const AddBookScreen(),
                   ),
                 );
+
+                // Refresh the list if a book was added/modified
+                if (result == true && context.mounted) {
+                  context.read<HomeScreenBloc>().add(const RefreshBooksEvent());
+                }
               },
               icon: const Icon(Icons.add),
               label: const Text('Dodaj książkę'),

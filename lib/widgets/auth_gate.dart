@@ -22,10 +22,24 @@ class AuthGate extends StatelessWidget {
         _logger.fine(
           'listenWhen: ${previous.runtimeType} -> ${current.runtimeType}',
         );
-        return true;
+        // Only listen when transitioning from Authenticated to Unauthenticated
+        // This catches token expiration and explicit sign-outs
+        return previous is Authenticated &&
+            (current is Unauthenticated || current is AuthError);
       },
       listener: (context, state) {
-        _logger.fine('listener called with state: ${state.runtimeType}');
+        _logger.info(
+          'User transitioned from Authenticated to ${state.runtimeType}',
+        );
+        _logger.info('Clearing navigation stack to show login screen');
+
+        // Pop all routes to reveal the AuthenticationScreen
+        // This ensures that when token expires, user goes back to login
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) {
+            Navigator.of(context).popUntil((route) => route.isFirst);
+          }
+        });
       },
       buildWhen: (previous, current) {
         // Always rebuild to ensure UI stays in sync

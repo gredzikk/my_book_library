@@ -92,6 +92,7 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     RefreshBooksEvent event,
     Emitter<HomeScreenState> emit,
   ) async {
+    _logger.info('RefreshBooksEvent received - refreshing books list');
     // Reuse LoadBooksEvent logic with forceRefresh
     await _onLoadBooks(
       LoadBooksEvent(forceRefresh: true, filters: _currentFilters),
