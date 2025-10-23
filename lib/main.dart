@@ -8,6 +8,7 @@ import 'package:logging/logging.dart';
 import 'dart:developer' as dev;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:app_links/app_links.dart';
 
 // Import widgets and services
 import 'widgets/auth_gate.dart';
@@ -59,10 +60,78 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   static final Logger _logger = Logger('MyApp');
+  late final AppLinks _appLinks;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDeepLinks();
+  }
+
+  /// Initialize deep link handling for email confirmation and password reset
+  Future<void> _initDeepLinks() async {
+    _appLinks = AppLinks();
+
+    // Handle initial deep link if app was opened via email link
+    try {
+      final initialUri = await _appLinks.getInitialLink();
+      if (initialUri != null) {
+        _logger.info('App opened with initial deep link: $initialUri');
+        await _handleDeepLink(initialUri);
+      }
+    } catch (e) {
+      _logger.severe('Error handling initial deep link: $e');
+    }
+
+    // Listen for deep links while app is running
+    _appLinks.uriLinkStream.listen(
+      (uri) {
+        _logger.info('Received deep link: $uri');
+        _handleDeepLink(uri);
+      },
+      onError: (err) {
+        _logger.severe('Error in deep link stream: $err');
+      },
+    );
+  }
+
+  /// Handle deep link from email confirmation or password reset
+  Future<void> _handleDeepLink(Uri uri) async {
+    try {
+      _logger.info('Processing deep link: ${uri.toString()}');
+
+      // Check if this is a login callback with authentication fragments
+      if (uri.host == 'login-callback') {
+        // Supabase handles the auth callback automatically via the SDK
+        // The onAuthStateChange stream will trigger and update the AuthBloc
+        _logger.info(
+          'Login callback detected, Supabase will handle authentication',
+        );
+
+        // Wait a moment for Supabase to process the auth callback
+        await Future.delayed(const Duration(milliseconds: 500));
+
+        // The AuthBloc will automatically update via the authStateChanges stream
+        _logger.info('Auth callback processed, user should be authenticated');
+      }
+    } catch (e) {
+      _logger.severe('Error handling deep link: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

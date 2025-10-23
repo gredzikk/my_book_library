@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import '../features/auth/view/login_screen.dart';
+import 'view/login_screen.dart';
 
 /// AuthenticationScreen - wrapper for authentication flow
 ///

@@ -23,6 +23,7 @@ dependencies:
   package_info_plus: ^5.0.1
   mobile_scanner: ^5.2.3
   showcaseview: ^3.0.0 
+  flutter_launcher_icons: ^0.10.0
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +37,10 @@ dev_dependencies:
   mockito: ^5.4.4
   bloc_test: ^9.1.7
   
+flutter_icons:
+  android: true
+  image_path: "assets/icon.png"
+
 dependency_overrides:
   # If you have conflicts, add this
   web: ^0.5.1

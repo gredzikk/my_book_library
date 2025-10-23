@@ -153,3 +153,7 @@ This project is currently **in development**. The core features for the Minimum 
 ## License
 
 This project does not currently have a license.
+
+## Attribution
+
+This project uses [Book icons created by Smashicons - Flaticon]("https://www.flaticon.com/free-icons/book)

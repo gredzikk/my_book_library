@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:my_book_library/features/home/view/home_screen_view.dart';
 import '../features/auth/bloc/bloc.dart';
-import '../screens/authentication_screen.dart';
+import '../features/auth/authentication_screen.dart';
 
 /// AuthGate - strażnik autoryzacji aplikacji
 ///
