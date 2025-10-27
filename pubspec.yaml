@@ -25,6 +25,7 @@ dependencies:
   showcaseview: ^3.0.0 
   flutter_launcher_icons: ^0.14.4
   app_links: ^6.3.4
+  http: ^1.2.0
 
 dev_dependencies:
   flutter_test:

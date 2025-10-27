@@ -2209,10 +2209,6 @@ abstract class _GenreDto implements GenreDto {
       throw _privateConstructorUsedError;
 }
 
-GoogleBookResult _$GoogleBookResultFromJson(Map<String, dynamic> json) {
-  return _GoogleBookResult.fromJson(json);
-}
-
 /// @nodoc
 mixin _$GoogleBookResult {
   String get title => throw _privateConstructorUsedError;
@@ -2224,9 +2220,6 @@ mixin _$GoogleBookResult {
   ImageLinks? get imageLinks => throw _privateConstructorUsedError;
   List<IndustryIdentifier>? get industryIdentifiers =>
       throw _privateConstructorUsedError;
-
-  /// Serializes this GoogleBookResult to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of GoogleBookResult
   /// with the given fields replaced by the non-null parameter values.
@@ -2421,7 +2414,7 @@ class __$$GoogleBookResultImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$GoogleBookResultImpl extends _GoogleBookResult {
   const _$GoogleBookResultImpl({
     required this.title,
@@ -2436,9 +2429,6 @@ class _$GoogleBookResultImpl extends _GoogleBookResult {
        _categories = categories,
        _industryIdentifiers = industryIdentifiers,
        super._();
-
-  factory _$GoogleBookResultImpl.fromJson(Map<String, dynamic> json) =>
-      _$$GoogleBookResultImplFromJson(json);
 
   @override
   final String title;
@@ -2511,7 +2501,6 @@ class _$GoogleBookResultImpl extends _GoogleBookResult {
             ));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
     runtimeType,
@@ -2535,11 +2524,6 @@ class _$GoogleBookResultImpl extends _GoogleBookResult {
         this,
         _$identity,
       );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$GoogleBookResultImplToJson(this);
-  }
 }
 
 abstract class _GoogleBookResult extends GoogleBookResult {
@@ -2554,9 +2538,6 @@ abstract class _GoogleBookResult extends GoogleBookResult {
     final List<IndustryIdentifier>? industryIdentifiers,
   }) = _$GoogleBookResultImpl;
   const _GoogleBookResult._() : super._();
-
-  factory _GoogleBookResult.fromJson(Map<String, dynamic> json) =
-      _$GoogleBookResultImpl.fromJson;
 
   @override
   String get title;

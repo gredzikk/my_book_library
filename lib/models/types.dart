@@ -132,12 +132,12 @@ class UpdateBookDto with _$UpdateBookDto {
   /// Convert to JSON for API request (excludes null values)
   Map<String, dynamic> toRequestJson() {
     final map = <String, dynamic>{};
-    
+
     // Always include non-null values, handle empty strings for optional fields
     if (title != null) map['title'] = title;
     if (author != null) map['author'] = author;
     if (pageCount != null) map['page_count'] = pageCount;
-    
+
     // For optional fields, include null to clear the field if needed
     if (genreId != null) {
       map['genre_id'] = genreId;
@@ -160,7 +160,7 @@ class UpdateBookDto with _$UpdateBookDto {
     if (lastReadPageNumber != null) {
       map['last_read_page_number'] = lastReadPageNumber;
     }
-    
+
     return map;
   }
 }
@@ -268,8 +268,26 @@ class GoogleBookResult with _$GoogleBookResult {
     List<IndustryIdentifier>? industryIdentifiers,
   }) = _GoogleBookResult;
 
-  factory GoogleBookResult.fromJson(Map<String, dynamic> json) =>
-      _$GoogleBookResultFromJson(json);
+  factory GoogleBookResult.fromJson(Map<String, dynamic> json) {
+    return GoogleBookResult(
+      title: json['title'] as String? ?? '',
+      authors: (json['authors'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      publisher: json['publisher'] as String?,
+      publishedDate: json['publishedDate'] as String?,
+      pageCount: json['pageCount'] as int?,
+      categories: (json['categories'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      imageLinks: json['imageLinks'] != null
+          ? ImageLinks.fromJson(json['imageLinks'] as Map<String, dynamic>)
+          : null,
+      industryIdentifiers: (json['industryIdentifiers'] as List<dynamic>?)
+          ?.map((e) => IndustryIdentifier.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
 
   const GoogleBookResult._();
 
