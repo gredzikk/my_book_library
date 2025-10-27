@@ -80,7 +80,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: flutter test integration_test/smoke/critical_path_test.dart --dart-define=SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }} --dart-define=SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
+          script: flutter test integration_test/smoke/critical_path_test.dart --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_TEST_URL }} --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
 
       - name: Upload test results
         if: always()
@@ -121,11 +121,11 @@ jobs:
           android: false
           tool-cache: false
 
-      - name: Build Android APK
+      - name: Build Android APK (Production)
         run: |
           flutter build apk --release \
-            --dart-define=SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }} \
-            --dart-define=SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
+            --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_PROD_URL }} \
+            --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_PROD_ANON_KEY }}
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
