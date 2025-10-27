@@ -1,6 +1,7 @@
 name: E2E Integration Tests
 
-on:
+push:
+    branches: [main, develop] 
   workflow_dispatch: # Manual trigger
 
 jobs:
