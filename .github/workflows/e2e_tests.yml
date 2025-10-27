@@ -117,24 +117,11 @@ jobs:
             --dart-define=SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }} \
             --dart-define=SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
 
-      - name: Build Android App Bundle
-        run: |
-          flutter build appbundle --release \
-            --dart-define=SUPABASE_TEST_URL=${{ secrets.SUPABASE_TEST_URL }} \
-            --dart-define=SUPABASE_TEST_ANON_KEY=${{ secrets.SUPABASE_TEST_ANON_KEY }}
-
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-${{ steps.version.outputs.version }}
           path: build/app/outputs/flutter-apk/app-release.apk
-          retention-days: 30
-
-      - name: Upload App Bundle artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-bundle-release-${{ steps.version.outputs.version }}
-          path: build/app/outputs/bundle/release/app-release.aab
           retention-days: 30
 
       - name: Create GitHub Release
@@ -157,10 +144,8 @@ jobs:
             
             ### Downloads
             - APK: Suitable for direct installation on Android devices
-            - AAB: For Google Play Store distribution
           files: |
             build/app/outputs/flutter-apk/app-release.apk
-            build/app/outputs/bundle/release/app-release.aab
           draft: false
           prerelease: false
         env:
